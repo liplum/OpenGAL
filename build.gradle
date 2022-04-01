@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group 'open-gal'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+test {
+}
