@@ -4,7 +4,8 @@ plugins {
 
 group 'open-gal'
 version '1.0'
-
+apply plugin: "java"
+sourceSets.main.java.srcDirs = ["src"]
 repositories {
     mavenCentral()
 }
