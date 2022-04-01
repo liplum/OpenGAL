@@ -1,36 +1,54 @@
 package opengal.core;
 
+import opengal.api.IAction;
+import opengal.api.IOptions;
 import opengal.api.IText;
+import opengal.api.Listener;
 import opengal.excpetions.CurNodeNullException;
-import opengal.excpetions.NoValueException;
-import opengal.excpetions.NotInputException;
+import opengal.excpetions.NoSuchActionException;
+import opengal.excpetions.NoSuchInputException;
+import opengal.excpetions.NoSuchValueException;
 import opengal.tree.StoryNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Stack;
 import java.util.function.Function;
 
 public class Interpreter implements IInterpreter {
     private StoryTree tree;
     private int index;
+    private final Stack<Integer> calls = new Stack<>();
     private StoryNode curNode;
+    @Nullable
+    private IText textDisplayer;
+    @Nullable
+    private Listener endListener;
+    @Nullable
+    private IOptions optionsHandler;
     @NotNull
-    private HashSet<IText> textDisplayer = new HashSet<>();
+    private final HashMap<String, Object> name2Input = new HashMap<>();
     @NotNull
-    private HashMap<String, Object> name2Input = new HashMap<>();
+    private final HashMap<String, IAction> name2Action = new HashMap<>();
     @NotNull
-    private HashMap<String, Object> values = new HashMap<>();
+    private final HashMap<String, Object> values = new HashMap<>();
     @Nullable
     private Object curBound;
     @Nullable
     private Function<String, Object> metaTable;
     private int selected;
+    private int optionNumber;
+    private boolean isEnd = false;
 
     public void next() {
         curNode = tree.get(index);
         index++;
+    }
+
+    @Override
+    public boolean isEnd() {
+        return isEnd;
     }
 
     @Override
@@ -39,6 +57,9 @@ public class Interpreter implements IInterpreter {
             throw new CurNodeNullException("Current node is null.");
         }
         curNode.operate(this);
+        if (isEnd && endListener != null) {
+            endListener.on();
+        }
     }
 
     @Override
@@ -53,14 +74,19 @@ public class Interpreter implements IInterpreter {
             v = metaTable.apply(name);
         }
         if (v == null) {
-            throw new NoValueException("Uniform " + name + " hasn't been set.");
+            throw new NoSuchValueException("Uniform " + name + " hasn't been set.");
         }
         return v;
     }
 
     @Override
-    public void addTextHandler(@NotNull IText handler) {
-        textDisplayer.add(handler);
+    public void setTextHandler(@NotNull IText handler) {
+        textDisplayer = handler;
+    }
+
+    @Override
+    public void onEnd(@NotNull Listener listener) {
+        endListener = listener;
     }
 
     public void setInput(@NotNull String name, @NotNull Object obj) {
@@ -68,8 +94,8 @@ public class Interpreter implements IInterpreter {
     }
 
     public void setText(int id) {
-        for (IText handler : textDisplayer) {
-            handler.handleTextID(id);
+        if (textDisplayer != null) {
+            textDisplayer.handleTextID(id);
         }
     }
 
@@ -80,22 +106,36 @@ public class Interpreter implements IInterpreter {
      */
     public void jumpTo(@NotNull String blockName) {
         // Actually, the name will be mapped to the index.
+        int startIndex = tree.getStartIndex(blockName);
+        calls.push(startIndex);
+        index = startIndex;
     }
 
-    public void setOptionCount(int count) {
+    @Override
+    public void returnBlock() {
+        if (!calls.empty()) {
+            index = calls.pop();
+        }
+        isEnd = calls.empty();
+    }
 
+    public void setOptionNumber(int numer) {
+        optionNumber = numer;
+        if (optionsHandler != null) {
+            optionsHandler.handle(numer);
+        }
     }
 
     /**
      * bind the target object
      *
      * @param name input name
-     * @throws NotInputException raises when this name hasn't been inputted
+     * @throws NoSuchInputException raises when this name hasn't been inputted
      */
     public void bind(@NotNull String name) {
         Object bound = name2Input.get(name);
         if (bound == null) {
-            throw new NotInputException(name + " hasn't been bound yet.");
+            throw new NoSuchInputException(name + " hasn't been bound yet.");
         }
     }
 
@@ -109,7 +149,7 @@ public class Interpreter implements IInterpreter {
             o = metaTable.apply(name);
         }
         if (!(o instanceof Boolean)) {
-            throw new NoValueException("Can't find value of " + name);
+            throw new NoSuchValueException("Can't find value of " + name);
         }
         return (boolean) o;
     }
@@ -123,7 +163,11 @@ public class Interpreter implements IInterpreter {
     }
 
     public void doAction(@NotNull String actionName, @NotNull Object[] args) {
-
+        IAction action = name2Action.get(actionName);
+        if (action == null) {
+            throw new NoSuchActionException(actionName + " not found.");
+        }
+        action.invoke(args);
     }
 
     @Nullable
@@ -136,7 +180,7 @@ public class Interpreter implements IInterpreter {
         return metaTable;
     }
 
-    public void metaTable(@NotNull Function<String, Object> metaTable) {
+    public void setMetaTable(@NotNull Function<String, Object> metaTable) {
         this.metaTable = metaTable;
     }
 
@@ -160,15 +204,35 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    public void setOptionHandler(@NotNull IOptions handler) {
+        optionsHandler = handler;
+    }
+
+    @Override
+    public void addAction(String name, IAction action) {
+        name2Action.put(name, action);
+    }
+
+    @Override
+    public int getOptionNumber() {
+        return optionNumber;
+    }
+
+    @Override
     public void reset() {
-        textDisplayer = new HashSet<>();
-        name2Input = new HashMap<>();
-        values = new HashMap<>();
+        name2Input.clear();
+        values.clear();
+        calls.clear();
+        name2Action.clear();
+        textDisplayer = null;
+        endListener = null;
+        optionsHandler = null;
         curBound = null;
         metaTable = null;
-        selected = 0;
         curNode = null;
         tree = null;
+        selected = 0;
+        optionNumber = 0;
         index = 0;
     }
 }

@@ -1,7 +1,7 @@
 package opengal.tree;
 
-import com.sun.istack.internal.Nullable;
 import opengal.core.IInterpreter;
+import org.jetbrains.annotations.Nullable;
 
 public class ConditionNode implements StoryNode {
     public String conditionName;

@@ -1,6 +1,9 @@
 package opengal.core;
 
+import opengal.api.IAction;
+import opengal.api.IOptions;
 import opengal.api.IText;
+import opengal.api.Listener;
 import opengal.tree.StoryNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +15,11 @@ public interface IInterpreter {
 
     void execute();
 
-    void addTextHandler(@NotNull IText handler);
+    void setTextHandler(@NotNull IText handler);
+
+    void onEnd(@NotNull Listener listener);
+
+    void setOptionHandler(@NotNull IOptions handler);
 
     void uniform(String name, @NotNull Object value);
 
@@ -25,7 +32,7 @@ public interface IInterpreter {
 
     void jumpTo(@NotNull String blockName);
 
-    void setOptionCount(int count);
+    void setOptionNumber(int count);
 
     void bind(@NotNull String name);
 
@@ -44,7 +51,7 @@ public interface IInterpreter {
 
     @Nullable Function<String, Object> getMetaTable();
 
-    void metaTable(@NotNull Function<String, Object> metaTable);
+    void setMetaTable(@NotNull Function<String, Object> metaTable);
 
     @NotNull StoryTree getTree();
 
@@ -54,5 +61,13 @@ public interface IInterpreter {
 
     @Nullable Object getCurBound();
 
+    void addAction(String name, IAction action);
+
+    int getOptionNumber();
+
     void reset();
+
+    boolean isEnd();
+
+    void returnBlock();
 }

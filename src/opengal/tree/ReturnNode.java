@@ -2,11 +2,9 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public class OptionNode implements StoryNode {
-    public int optionCount;
-
+public class ReturnNode implements StoryNode{
     @Override
     public void operate(IInterpreter in) {
-        in.setOptionNumber(optionCount);
+        in.returnBlock();
     }
 }
