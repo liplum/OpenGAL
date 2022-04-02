@@ -17,7 +17,7 @@ public class Analyzer implements IAnalyzer {
 
     public static final HashSet<Character> SYMBOL_TOKEN = new HashSet<>(
         Arrays.asList(
-            ',', '.', '+', '-', '*', '/', '%',
+            ',', '.', '+', '-', '*', '/', '%', '=',
             '<', '>', '[', ']', '(', ')', '{', '}',
             '\\', '|', '?', '$', '!', '&', '~', '#', '^'
         )
@@ -61,7 +61,7 @@ public class Analyzer implements IAnalyzer {
                 if(character != DELIMITER) space = false;
 
                 if(character == DELIMITER || character == NEWLINE || SYMBOL_TOKEN.contains(character)){
-                    if(character == DELIMITER){
+                    if(character == DELIMITER || character == NEWLINE){
                         if(space) continue;
                         space = true;
                     }

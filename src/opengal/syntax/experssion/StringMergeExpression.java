@@ -1,5 +1,6 @@
 package opengal.syntax.experssion;
 
+import opengal.core.IInterpreter;
 import opengal.syntax.Expression;
 
 public class StringMergeExpression implements Expression<String>{
@@ -7,8 +8,8 @@ public class StringMergeExpression implements Expression<String>{
   Expression<Object> b;
 
   @Override
-  public String calculate(){
-    String str = String.valueOf(a.calculate());
-    return str + b.calculate();
+  public String calculate(IInterpreter interpreter){
+    String str = String.valueOf(a.calculate(interpreter));
+    return str + b.calculate(interpreter);
   }
 }
