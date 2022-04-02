@@ -2,7 +2,7 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public class TextNode implements StoryNode {
+public class TextNode implements Node{
     public int textID;
 
     @Override

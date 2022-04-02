@@ -2,7 +2,7 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public class JumpNode implements StoryNode {
+public class JumpNode implements Node{
     public String destination;
 
     @Override

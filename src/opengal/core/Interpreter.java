@@ -8,7 +8,7 @@ import opengal.excpetions.CurNodeNullException;
 import opengal.excpetions.NoSuchActionException;
 import opengal.excpetions.NoSuchInputException;
 import opengal.excpetions.NoSuchValueException;
-import opengal.tree.StoryNode;
+import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,7 @@ public class Interpreter implements IInterpreter {
     private StoryTree tree;
     private int index;
     private final Stack<Integer> calls = new Stack<>();
-    private StoryNode curNode;
+    private Node curNode;
     @Nullable
     private IText textDisplayer;
     @Nullable
@@ -194,7 +194,7 @@ public class Interpreter implements IInterpreter {
     }
 
     @NotNull
-    public StoryNode getCurNode() {
+    public Node getCurNode() {
         return curNode;
     }
 

@@ -1,47 +1,30 @@
 package opengal.syntax.keywords;
 
+import opengal.syntax.AnalysisContext;
 import opengal.syntax.Keyword;
 import opengal.tree.ActionNode;
-import opengal.tree.StoryNode;
+import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ActionKw extends Keyword {
     @Override
-    public String getKeywordName() {
-        return "Action";
+    public void check(AnalysisContext context){
+
     }
 
     @Override
-    public int getArgNumber() {
-        return 1;
+    public String generate(){
+        return null;
     }
 
     @Override
-    public Object[] bakeArgs(Object[] original) {
-        return super.bakeArgs(original);
+    public void product(AnalysisContext context){
+
     }
 
     @Override
-    public boolean customHandleArgs() {
-        return super.customHandleArgs();
-    }
-
-    @Override
-    @Nullable
-    public Object[] handleArgs(String args) {
-        return super.handleArgs(args);
-    }
-
-    @Override
-    public @NotNull StoryNode gen(@NotNull Object[] args) {
-        // 1st: action name
-        // 2nd?: arg1
-        ActionNode actionNode = new ActionNode();
-        actionNode.actionName = (String) args[0];
-        Object[] actionArgs = new Object[args.length - 1];
-        System.arraycopy(actionArgs, 1, actionArgs, 0, args.length - 1);
-        actionNode.args = actionArgs;
-        return actionNode;
+    public boolean headMatcher(String token){
+        return false;
     }
 }

@@ -2,7 +2,7 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public class ActionNode implements StoryNode {
+public class ActionNode implements Node{
     public String actionName;
     public Object[] args;
 

@@ -1,25 +1,32 @@
 package opengal.syntax.keywords;
 
+import opengal.excpetions.KeywordException;
+import opengal.syntax.AnalysisContext;
 import opengal.syntax.Keyword;
-import opengal.tree.StoryNode;
 import opengal.tree.TextNode;
-import org.jetbrains.annotations.NotNull;
 
-public class TextKw extends Keyword {
+public class TextKw extends Keyword{
+
     @Override
-    public String getKeywordName() {
-        return "Text";
+    public void check(AnalysisContext context){
+        if(tokens.size() > 1) throw new KeywordException("unexpected token: \":text >" + tokens.get(1) + "<\" " + generateError(context));
     }
 
     @Override
-    public int getArgNumber() {
-        return 1;
+    public String generate(){
+        return ":text";
     }
 
     @Override
-    public @NotNull StoryNode gen(@NotNull Object[] args) {
-        TextNode textNode = new TextNode();
-        textNode.textID = (int) args[0];
-        return textNode;
+    public void product(AnalysisContext context){
+        int index = context.countOf(this);
+        TextNode node = new TextNode();
+        node.textID = index;
+        context.putNode(this, node);
+    }
+
+    @Override
+    public boolean headMatcher(String token){
+        return token.equals(":text");
     }
 }

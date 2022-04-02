@@ -4,7 +4,7 @@ import opengal.api.IAction;
 import opengal.api.IOptions;
 import opengal.api.IText;
 import opengal.api.Listener;
-import opengal.tree.StoryNode;
+import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,7 +57,7 @@ public interface IInterpreter {
 
     void setTree(@NotNull StoryTree tree);
 
-    @NotNull StoryNode getCurNode();
+    @NotNull Node getCurNode();
 
     @Nullable Object getCurBound();
 

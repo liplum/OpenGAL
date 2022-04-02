@@ -2,7 +2,7 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public class BindNode implements StoryNode {
+public class BindNode implements Node{
     public String boundName;
 
     @Override

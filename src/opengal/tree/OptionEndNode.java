@@ -4,7 +4,7 @@ import opengal.core.IInterpreter;
 
 import java.util.Map;
 
-public class OptionEndNode implements StoryNode {
+public class OptionEndNode implements Node{
     public Map<Integer, String> number2Destination;
 
     @Override

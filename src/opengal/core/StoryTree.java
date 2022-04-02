@@ -1,7 +1,7 @@
 package opengal.core;
 
 import opengal.excpetions.NoSuchBlockException;
-import opengal.tree.StoryNode;
+import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -9,15 +9,12 @@ import java.util.Map;
 
 public class StoryTree {
     @NotNull
-    private final List<StoryNode> nodes;
-    private final Map<String, Integer> name2Index;
+    private final List<Node> nodes;
 
     public StoryTree(
-            @NotNull List<StoryNode> nodes,
-            Map<String, Integer> name2Index
+            @NotNull List<Node> nodes
     ) {
         this.nodes = nodes;
-        this.name2Index = name2Index;
     }
 
     public int getSize() {
@@ -39,7 +36,7 @@ public class StoryTree {
     }
 
     @NotNull
-    public StoryNode get(int index) {
+    public Node get(int index) {
         return nodes.get(index);
     }
 }

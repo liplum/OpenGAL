@@ -3,7 +3,7 @@ package opengal.tree;
 import opengal.core.IInterpreter;
 import org.jetbrains.annotations.Nullable;
 
-public class ConditionNode implements StoryNode {
+public class ConditionNode implements Node{
     public String conditionName;
     @Nullable
     public String trueDestination;

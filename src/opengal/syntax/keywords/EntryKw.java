@@ -2,11 +2,9 @@ package opengal.syntax.keywords;
 
 import opengal.syntax.AnalysisContext;
 import opengal.syntax.Keyword;
-import opengal.tree.ReturnNode;
-import opengal.tree.Node;
-import org.jetbrains.annotations.NotNull;
 
-public class ReturnKw extends Keyword {
+public class EntryKw extends Keyword {
+
     @Override
     public void check(AnalysisContext context){
 

@@ -2,6 +2,6 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 
-public interface StoryNode {
+public interface Node{
     void operate(IInterpreter in);
 }

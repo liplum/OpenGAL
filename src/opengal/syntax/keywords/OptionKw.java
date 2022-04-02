@@ -1,32 +1,30 @@
 package opengal.syntax.keywords;
 
+import opengal.syntax.AnalysisContext;
 import opengal.syntax.Keyword;
 import opengal.tree.OptionNode;
-import opengal.tree.StoryNode;
+import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class OptionKw extends Keyword {
     @Override
-    public String getKeywordName() {
-        return "Option";
+    public void check(AnalysisContext context){
+
     }
 
     @Override
-    public int getArgNumber() {
-        return 1;
+    public String generate(){
+        return null;
     }
 
     @Override
-    @Nullable
-    public String symbolNeed() {
-        return "JumpTo";
+    public void product(AnalysisContext context){
+
     }
 
     @Override
-    public @NotNull StoryNode gen(@NotNull Object[] args) {
-        OptionNode optionNode = new OptionNode();
-        optionNode.optionCount = (int) args[0];
-        return optionNode;
+    public boolean headMatcher(String token){
+        return false;
     }
 }

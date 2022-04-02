@@ -1,48 +1,32 @@
 package opengal.syntax;
 
 
-import opengal.tree.StoryNode;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.ArrayList;
 
-import java.util.List;
+public abstract class Keyword{
+  public ArrayList<String> tokens = new ArrayList<>();
 
-public abstract class Keyword {
-    public abstract String getKeywordName();
+  public abstract void check(AnalysisContext context);
 
-    public abstract int getArgNumber();
+  public abstract String generate();
 
-    @Nullable
-    public List<String> companionKeyword() {
-        return null;
-    }
+  public abstract void product(AnalysisContext context);
 
-    public boolean companionBy(String kwName) {
-        return false;
-    }
+  public abstract boolean headMatcher(String token);
 
-    public boolean isSingle() {
-        return true;
-    }
+  public void associate(Keyword associated){}
 
-    public Object[] bakeArgs(Object[] original) {
-        return original;
-    }
+  public void read(String nextToken){
+    tokens.add(nextToken);
+  }
 
-    public boolean customHandleArgs(){
-        return false;
-    }
+  public void finish(){
+    tokens.clear();
+  }
 
-    @Nullable
-    public String symbolNeed(){
-        return null;
-    }
+  protected String generateError(AnalysisContext context){
+    return context.file.getName() + ":" + context.line;
+  }
 
-    @Nullable
-    public Object[] handleArgs(String args){
-        return null;
-    }
 
-    @NotNull
-    public abstract StoryNode gen(@NotNull Object[] args);
 }
