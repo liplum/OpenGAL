@@ -3,30 +3,30 @@ package opengal.syntax.keywords;
 import opengal.excpetions.KeywordException;
 import opengal.syntax.AnalysisContext;
 import opengal.syntax.Keyword;
-import opengal.tree.TextNode;
 
-public class TextKw extends Keyword{
+public class TextKw extends Keyword {
 
     @Override
-    public void check(AnalysisContext context){
-        if(tokens.size() > 1) throw new KeywordException("unexpected token: \":text >" + tokens.get(1) + "<\" " + generateError(context));
+    public void check(AnalysisContext context) {
+        if (tokens.size() > 1)
+            throw new KeywordException("unexpected token: \":text >" + tokens.get(1) + "<\" " + generateError(context));
     }
 
     @Override
-    public String generate(){
+    public String generate() {
         return ":text";
     }
 
     @Override
-    public void product(AnalysisContext context){
+    public void product(AnalysisContext context) {
         int index = context.countOf(this);
-        TextNode node = new TextNode();
+       /* TextNode node = new TextNode();
         node.textID = index;
-        context.putNode(this, node);
+        context.putNode(this, node);*/
     }
 
     @Override
-    public boolean headMatcher(String token){
+    public boolean headMatcher(String token) {
         return token.equals(":text");
     }
 }

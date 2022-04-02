@@ -8,6 +8,7 @@ import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 
@@ -39,8 +40,14 @@ public class Analyzer implements IAnalyzer {
         return null;
     }
 
+    @Override
     @NotNull
-    public StoryTree analyze(String code) {
+    public StoryTree analyze(@NotNull Reader reader) {
+        return null;
+    }
+
+    @NotNull
+    public StoryTree analyze(@NotNull String code) {
         StringReader reader = new StringReader(code);
         int c;
         try{
@@ -49,7 +56,7 @@ public class Analyzer implements IAnalyzer {
             boolean space = false;
 
             while((c = reader.read()) != -1){
-                char character = Character.toString(c).charAt(0);
+                char character = Character.toString((char)c).charAt(0);
 
                 if(character != DELIMITER) space = false;
 
@@ -95,7 +102,7 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     @NotNull
-    public String generate(StoryTree tree) {
+    public String generate(@NotNull StoryTree tree) {
         return "";
     }
 }

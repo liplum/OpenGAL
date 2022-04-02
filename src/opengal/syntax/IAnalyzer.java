@@ -3,9 +3,13 @@ package opengal.syntax;
 import opengal.core.StoryTree;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Reader;
+
 public interface IAnalyzer {
     @NotNull
-    StoryTree analyze(String code);
+    StoryTree analyze(@NotNull Reader reader);
     @NotNull
-    String generate(StoryTree tree);
+    StoryTree analyze(@NotNull String code);
+    @NotNull
+    String generate(@NotNull StoryTree tree);
 }

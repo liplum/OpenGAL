@@ -5,12 +5,12 @@ import opengal.core.StoryTree;
 import opengal.tree.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -18,27 +18,15 @@ import java.util.Random;
 public class TestInterpreter {
     public StoryTree tree;
     public Interpreter in;
-    public LinkedList<String> output;
-    public boolean silent = true;
+    public LinkedList<String> output = new LinkedList<>();
+    public boolean silent = false;
 
     @Test
+    @Timeout(10)
     public void test() {
         in.start();
         while (!in.isEnd()) {
             in.execute();
-            in.next();
-        }
-    }
-
-    @Test
-    @Disabled
-    public void benchmark() {
-        for (int i = 0; i < 10000; i++) {
-            in.start();
-            while (!in.isEnd()) {
-                in.execute();
-                in.next();
-            }
         }
     }
 
@@ -55,118 +43,118 @@ public class TestInterpreter {
 
     @BeforeEach
     public void genTree() {
-     /*   output = new LinkedList<>();
-        ArrayList<StoryNode> nodes = new ArrayList<>();
-        BindNode bUnit = new BindNode();
-        bUnit.boundName = "Unit";
-        BindNode bPlayer = new BindNode();
-        bPlayer.boundName = "Player";
-        TextNode[] ts = new TextNode[8];
-        for (int i = 0; i < ts.length; i++) {
-            ts[i] = new TextNode();
-            ts[i].textID = i;
-        }
-        OptionNode op = new OptionNode();
-        op.optionCount = 2;
-        OptionEndNode ope = new OptionEndNode();
-        HashMap<Integer, String> opeGoto = new HashMap<>();
-        ope.number2Destination = opeGoto;
-        opeGoto.put(0, "Like");
-        opeGoto.put(1, "DontLike");
-        ReturnNode ret = new ReturnNode();
-        //Main
-        nodes.add(bUnit);      //0
-        nodes.add(ts[0]);      //1
-        nodes.add(ts[1]);      //2
-        nodes.add(ts[2]);      //3
-        nodes.add(op);         //4
-        nodes.add(ope);        //5
-        nodes.add(bUnit);      //6
-        nodes.add(ts[3]);      //7
-        nodes.add(bPlayer);    //8
-        nodes.add(ts[4]);      //9
-        nodes.add(bUnit);      //10
-        nodes.add(ts[5]);      //11
-        nodes.add(ret);        //12
-        //Like
-        nodes.add(bUnit);      //13
-        nodes.add(ts[6]);      //14
-        nodes.add(ret);        //15
-        //DontLike
-        nodes.add(bUnit);      //16
-        nodes.add(ts[7]);      //17
-        nodes.add(ret);        //18
-        HashMap<String, Integer> b2i = new HashMap<>();
-        b2i.put("Main", 0);
-        b2i.put("Like", 12);
-        b2i.put("DontLike", 15);
-        tree = new StoryTree(nodes);
         in = new Interpreter();
-        in.setTree(tree);
-        if (!silent) {
-            in.beforeExecute(() -> {
-                output.add("[" + in.getCurIndex() + "]");
-            });
-            in.afterExecute(() -> {
-                output.add("\n");
-            });
-            in.setTextHandler(id -> {
-                output.add(in.getCurBound() + "'s text:" + id);
-            });
-            in.onBound(() -> {
-                output.add("Binding:" + in.getCurBound());
-            });
-            in.setOptionHandler(number -> {
-                output.add("Option Number:" + number);
-                in.setSelected(0);
-            });
-            in.onEnd(() -> {
-                output.add("End\n");
-            });
-        } else {
-            Random random = new Random();
-            in.setOptionHandler(number -> {
-                in.setSelected(random.nextInt(number));
-            });
-        }
-        in.setInput("Unit", "Unit#5978");
-        in.setInput("Player", "Player#12138");
-        if (!silent) {
-            for (StoryNode node : tree.getNodes()) {
-                System.out.println(node.getClass().getSimpleName());
+        in.addAction("output", args -> {
+            output.add(in.getCurBound() + " ");
+            for (Object arg : args) {
+                output.add(arg.toString());
             }
-            System.out.flush();
-        }*/
+        });
+        ArrayList<Node> nodes = new ArrayList<>();
+        ActionNode output10 = new ActionNode();
+        output10.actionName = "output";
+        output10.args = new Object[]{10};
+        ActionNode output1 = new ActionNode();
+        output1.actionName = "output";
+        output1.args = new Object[]{1};
+        ActionNode a3 = new ActionNode();
+        a3.actionName = "output";
+        a3.args = new Object[]{"But you're still alive!"};
+        ActionNode a4 = new ActionNode();
+        a4.actionName = "output";
+        a4.args = new Object[]{"YES!"};
+        ActionNode a5 = new ActionNode();
+        a5.actionName = "output";
+        a5.args = new Object[]{"NO!"};
+        ConditionNode ifTrue = new ConditionNode();
+        ifTrue.conditionName = "IsTrue";
+        ifTrue.trueDestination = 3;
+        ifTrue.falseDestination = 6;
+        BindNode bPlum = new BindNode();
+        bPlum.boundName = "Plum";
+        ActionNode outputWow = new ActionNode();
+        outputWow.actionName = "output";
+        outputWow.args = new Object[]{"Wow, you got true!"};
+        ActionNode a7 = new ActionNode();
+        a7.actionName = "output";
+        a7.args = new Object[]{"Oh no, you got false... TAT"};
+        BlockEntryNode entryTrue = new BlockEntryNode();
+        entryTrue.blockHead = 9;
+        BlockEntryNode entryFalse = new BlockEntryNode();
+        entryFalse.blockHead = 14;
+        JumpNode jumpIfEnd = new JumpNode();
+        jumpIfEnd.destination = 8;
+        JumpNode jumpTrueEnd = new JumpNode();
+        jumpTrueEnd.destination = 14;
+        JumpNode jumpFalseEnd = new JumpNode();
+        jumpFalseEnd.destination = 18;
+        //Main
+        nodes.add(output10);            //0
+        nodes.add(output1);             //1
+        nodes.add(ifTrue);              //2
+        nodes.add(outputWow);       //3
+        nodes.add(entryTrue);       //4
+        nodes.add(jumpIfEnd);           //5
+        nodes.add(entryFalse);      //6
+        nodes.add(a7);              //7
+        nodes.add(a3);                  //8
+
+        //WhenTrue
+        nodes.add(jumpTrueEnd);         //9     =>14
+        nodes.add(bPlum);           //10
+        nodes.add(a4);              //11
+        nodes.add(ReturnNode.X);    //12
+        nodes.add(BlockEndNode.X);      //13
+
+        //WhenFalse
+        nodes.add(jumpFalseEnd);        //14    =>18
+        nodes.add(a5);              //15
+        nodes.add(ReturnNode.X);    //16
+        nodes.add(BlockEndNode.X);      //17
+
+        nodes.add(StopNode.X);          //18
+
+        tree = new StoryTree(nodes);
+        tree.fileName = "TestGAL";
+        HashSet<String> inputs = new HashSet<>();
+        inputs.add("Plum");
+        tree.inputs = inputs;
+        in.uniform("Plum", "Plum#5978");
+        Random random = new Random();
+        in.set("IsTrue", true);
+        in.beforeExecute(() -> {
+            output.add("[" + in.getCurIndex() + "]");
+        });
+        in.afterExecute(() -> {
+            output.add("\n");
+        });
+        in.setTree(tree);
     }
-/*
-@file LandDay
-@input Player
-@input Unit
-#
-:bind @Unit
-:text
-:text
-:text
-:option 2
-|-> Like
-|-> DontLike
-:bind @Unit
-:text
-:bind @Player
-:text
-:bind @Unit
-:text
-
-Like:
-:bind @Unit
-:text
-:return
-end Like
-
-DontLike:
-:bind @Unit
-:text
-:return
-end DontLike
- */
 }
+/*
+@file TestGAL
+@input Plum
+
+[ 0]:action output(10)
+[ 1]:action output(1)
+[ 2]:if @IsTrue
+[ 3]    :action output("Wow, you got true!")
+[ 4]    :entry WhenTrue
+[ 5]:else
+[ 6]    :entry WhenFalse
+[ 7]    :action output("Oh no, you got false... TAT")
+[  ]:end
+[ 8]:action output("But you're still alive!")
+
+[ 9]WhenTrue:
+[10]    :bind @Plum
+[11]    :action output("YES!")
+[12]    :return
+[13]end WhenTrue
+
+[14]WhenFalse:
+[15]    :action output("NO!")
+[16]    :return
+[17]end WhenFalse
+[18]
+ */

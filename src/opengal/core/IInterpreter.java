@@ -6,10 +6,7 @@ import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 public interface IInterpreter {
-    void next();
 
     void execute();
 
@@ -21,7 +18,9 @@ public interface IInterpreter {
 
     void onBound(@NotNull Listener listener);
 
-    void uniform(String name, @NotNull Object value);
+    void uniform(@NotNull String name, @NotNull Object value);
+
+    void pushIndex();
 
     void jumpTo(final int index);
 
@@ -38,11 +37,6 @@ public interface IInterpreter {
 
     void doAction(@NotNull String actionName, @NotNull Object[] args);
 
-    @Nullable
-    Function<String, Object> getMetaTable();
-
-    void setMetaTable(@NotNull Function<String, Object> metaTable);
-
     @NotNull
     StoryTree getTree();
 
@@ -51,18 +45,21 @@ public interface IInterpreter {
     @NotNull
     Node getCurNode();
 
-    void addAction(String name, IAction action);
+    void addAction(@NotNull String name, IAction action);
 
     void reset();
 
     boolean isEnd();
 
-    void returnBlock();
+    void rollbackPopIndex();
+
+    void popIndex();
 
     int getCurIndex();
 
-    void set(@NotNull String name,@NotNull Object value);
+    void set(@NotNull String name, @NotNull Object value);
 
-    @NotNull
-    <T> T get(@NotNull String name);
+    @NotNull <T> T get(@NotNull String name);
+
+    void terminate();
 }

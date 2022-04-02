@@ -2,20 +2,17 @@ package opengal.core;
 
 import opengal.api.IAction;
 import opengal.api.Listener;
-import opengal.excpetions.InputNotGivenException;
-import opengal.excpetions.InvariantException;
-import opengal.excpetions.NoSuchActionException;
-import opengal.excpetions.NoSuchValueException;
+import opengal.excpetions.*;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class Interpreter implements IInterpreter {
     private StoryTree tree;
     private int index;
+    @NotNull
     private final Stack<Integer> calls = new Stack<>();
     private Node curNode;
     @Nullable
@@ -34,13 +31,8 @@ public class Interpreter implements IInterpreter {
     private final HashSet<String> invariants = new HashSet<>();
     @Nullable
     private Object curBound;
-    @Nullable
-    private Function<String, Object> metaTable;
     private boolean isEnd = false;
-
-    public void next() {
-        index++;
-    }
+    private boolean noNext = false;
 
     @Override
     public boolean isEnd() {
@@ -49,25 +41,35 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void execute() {
-        curNode = tree.get(index);
-        if (beforeExecutes != null) {
-            for (Listener before : beforeExecutes) {
-                before.on();
+        try {
+            curNode = tree.get(index);
+            if (beforeExecutes != null) {
+                for (Listener before : beforeExecutes) {
+                    before.on();
+                }
             }
-        }
-        curNode.operate(this);
-        if (afterExecutes != null) {
-            for (Listener after : afterExecutes) {
-                after.on();
+
+            curNode.operate(this);
+            if (!noNext) {
+                index++;
             }
-        }
-        if (isEnd && endListener != null) {
-            endListener.on();
+            noNext = false;
+
+            if (afterExecutes != null) {
+                for (Listener after : afterExecutes) {
+                    after.on();
+                }
+            }
+            if (isEnd && endListener != null) {
+                endListener.on();
+            }
+        } catch (Exception e) {
+            throw new InterpretException("Index at " + index + " " + curNode.toString(), e);
         }
     }
 
     @Override
-    public void uniform(String name, @NotNull Object value) {
+    public void uniform(@NotNull String name, @NotNull Object value) {
         fields.put(name, value);
         invariants.add(name);
     }
@@ -101,33 +103,54 @@ public class Interpreter implements IInterpreter {
         endListener = listener;
     }
 
+    @Override
+    public void pushIndex() {
+        calls.push(index);
+    }
+
     /**
      * Jump to the block name.
      *
      * @param index which index it jumps to
      */
     public void jumpTo(final int index) {
-        calls.push(index);
+        if (index < 0 && index > tree.getSize()) {
+            throw new OverJumpException("index " + index + " is over than maximum " + tree.getSize());
+        }
         this.index = index;
+        unbind();
+        noNext = true;
+    }
+
+    @Override
+    public void terminate() {
+        isEnd = true;
     }
 
     @Override
     public void start() {
+        if (tree == null) {
+            throw new InterpretException("No tree");
+        }
         final Set<String> inputs = tree.inputs;
         final Set<String> keys = fields.keySet();
         if (inputs != null && !keys.containsAll(inputs)) {
             throw new InputNotGivenException(tree);
         }
-        jumpTo(0);
+        this.index = 0;
+        unbind();
     }
 
     @Override
-    public void returnBlock() {
-        if (!calls.empty()) {
-            index = calls.pop();
-        }
-        isEnd = calls.empty();
+    public void rollbackPopIndex() {
+        index = calls.pop();
     }
+
+    @Override
+    public void popIndex() {
+        calls.pop();
+    }
+
 
     /**
      * bind the target object
@@ -154,9 +177,6 @@ public class Interpreter implements IInterpreter {
 
     public boolean getBool(@NotNull String name) {
         Object o = fields.get(name);
-        if (!(o instanceof Boolean) && metaTable != null) {
-            o = metaTable.apply(name);
-        }
         if (!(o instanceof Boolean)) {
             throw new NoSuchValueException(tree, name);
         }
@@ -169,15 +189,6 @@ public class Interpreter implements IInterpreter {
             throw new NoSuchActionException(tree, actionName);
         }
         action.invoke(args);
-    }
-
-    @Nullable
-    public Function<String, Object> getMetaTable() {
-        return metaTable;
-    }
-
-    public void setMetaTable(@NotNull Function<String, Object> metaTable) {
-        this.metaTable = metaTable;
     }
 
     @NotNull
@@ -201,7 +212,7 @@ public class Interpreter implements IInterpreter {
 
 
     @Override
-    public void addAction(String name, IAction action) {
+    public void addAction(@NotNull String name, IAction action) {
         name2Action.put(name, action);
     }
 
@@ -222,9 +233,6 @@ public class Interpreter implements IInterpreter {
     @Override
     public <T> @NotNull T get(@NotNull String name) {
         Object v = fields.get(name);
-        if (v == null && metaTable != null) {
-            v = metaTable.apply(name);
-        }
         if (v == null) {
             throw new NoSuchValueException(tree, name);
         }
@@ -241,7 +249,6 @@ public class Interpreter implements IInterpreter {
         afterExecutes = null;
         endListener = null;
         curBound = null;
-        metaTable = null;
         curNode = null;
         tree = null;
         index = 0;
