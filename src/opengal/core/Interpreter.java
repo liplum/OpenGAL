@@ -12,6 +12,7 @@ import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Function;
@@ -27,6 +28,12 @@ public class Interpreter implements IInterpreter {
     private Listener endListener;
     @Nullable
     private IOptions optionsHandler;
+    @Nullable
+    private ArrayList<Listener> beforeExecutes;
+    @Nullable
+    private ArrayList<Listener> afterExecutes;
+    @Nullable
+    private ArrayList<Listener> onBounds;
     @NotNull
     private final HashMap<String, Object> name2Input = new HashMap<>();
     @NotNull
@@ -42,7 +49,6 @@ public class Interpreter implements IInterpreter {
     private boolean isEnd = false;
 
     public void next() {
-        curNode = tree.get(index);
         index++;
     }
 
@@ -53,10 +59,18 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void execute() {
-        if (curNode == null) {
-            throw new CurNodeNullException("Current node is null.");
+        curNode = tree.get(index);
+        if (beforeExecutes != null) {
+            for (Listener before : beforeExecutes) {
+                before.on();
+            }
         }
         curNode.operate(this);
+        if (afterExecutes != null) {
+            for (Listener after : afterExecutes) {
+                after.on();
+            }
+        }
         if (isEnd && endListener != null) {
             endListener.on();
         }
@@ -77,6 +91,30 @@ public class Interpreter implements IInterpreter {
             throw new NoSuchValueException("Uniform " + name + " hasn't been set.");
         }
         return v;
+    }
+
+    @Override
+    public void beforeExecute(@NotNull Listener listener) {
+        if (beforeExecutes == null) {
+            beforeExecutes = new ArrayList<>();
+        }
+        beforeExecutes.add(listener);
+    }
+
+    @Override
+    public void afterExecute(@NotNull Listener listener) {
+        if (afterExecutes == null) {
+            afterExecutes = new ArrayList<>();
+        }
+        afterExecutes.add(listener);
+    }
+
+    @Override
+    public void onBound(@NotNull Listener listener) {
+        if (onBounds == null) {
+            onBounds = new ArrayList<>();
+        }
+        onBounds.add(listener);
     }
 
     @Override
@@ -107,6 +145,14 @@ public class Interpreter implements IInterpreter {
     public void jumpTo(@NotNull String blockName) {
         // Actually, the name will be mapped to the index.
         int startIndex = tree.getStartIndex(blockName);
+        calls.push(index);
+        index = startIndex;
+    }
+
+    @Override
+    public void start() {
+        // Actually, the name will be mapped to the index.
+        int startIndex = tree.getStartIndex("Main");
         calls.push(startIndex);
         index = startIndex;
     }
@@ -136,6 +182,12 @@ public class Interpreter implements IInterpreter {
         Object bound = name2Input.get(name);
         if (bound == null) {
             throw new NoSuchInputException(name + " hasn't been bound yet.");
+        }
+        curBound = bound;
+        if (onBounds != null) {
+            for (Listener listener : onBounds) {
+                listener.on();
+            }
         }
     }
 
@@ -219,11 +271,18 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    public int getCurIndex() {
+        return index;
+    }
+
+    @Override
     public void reset() {
         name2Input.clear();
         values.clear();
         calls.clear();
         name2Action.clear();
+        beforeExecutes = null;
+        afterExecutes = null;
         textDisplayer = null;
         endListener = null;
         optionsHandler = null;
