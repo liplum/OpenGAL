@@ -13,4 +13,9 @@ public class AssignExpression<T> implements Expression<T>{
     interpreter.set(key, result);
     return result;
   }
+
+  @Override
+  public String toString(){
+    return key + " = " + exp;
+  }
 }

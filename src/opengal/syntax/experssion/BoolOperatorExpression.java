@@ -15,4 +15,9 @@ public class BoolOperatorExpression implements Expression<Boolean>{
       default: throw new RuntimeException("unknow opcode: " + opCode);
     }
   }
+
+  @Override
+  public String toString(){
+    return a + " = " + b;
+  }
 }

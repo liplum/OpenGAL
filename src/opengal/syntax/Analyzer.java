@@ -1,10 +1,10 @@
 package opengal.syntax;
 
 import opengal.core.StoryTree;
+import opengal.excpetions.AnalysisException;
 import opengal.syntax.keywords.ElseKw;
 import opengal.syntax.keywords.EntryKw;
 import opengal.syntax.keywords.IfKw;
-import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.StringReader;
 import java.util.*;
 
 public class Analyzer implements IAnalyzer {
-    public static final char DELIMITER = ' ', NEWLINE = '\n';
+    public static final char DELIMITER = ' ', NEWLINE = '\n', STRING_MARK = '\"';
 
     public static final HashSet<Character> SYMBOL_TOKEN = new HashSet<>(
         Arrays.asList(
@@ -55,8 +55,31 @@ public class Analyzer implements IAnalyzer {
             Keyword currKw = null;
             boolean space = false;
 
+            context.line = 0;
+
+            boolean inString = false, first = false;
+
             while((c = reader.read()) != -1){
-                char character = Character.toString((char)c).charAt(0);
+                char character = (char)c;
+
+                if(character == STRING_MARK && !inString){
+                    inString = true;
+                    first = true;
+                }
+                if(inString){
+                    curr.append(character);
+                    if(character == STRING_MARK && !first){
+                        inString = false;
+
+                        if(currKw != null){
+                            currKw.read(curr.toString());
+                        }
+                        else throw new AnalysisException("string can not use for keyword, (" + context.file.getName() + ":" + context.line + ")");
+                        curr = new StringBuilder();
+                    }
+                    first = false;
+                    continue;
+                }
 
                 if(character != DELIMITER) space = false;
 
@@ -79,6 +102,7 @@ public class Analyzer implements IAnalyzer {
                             currKw.finish();
                         }
                         currKw = null;
+                        context.line++;
                     }
 
                     if(SYMBOL_TOKEN.contains(character)){
