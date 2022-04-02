@@ -1,21 +1,18 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
-import org.jetbrains.annotations.Nullable;
 
-public class ConditionNode implements Node{
+public class ConditionNode implements Node {
     public String conditionName;
-    @Nullable
-    public String trueDestination;
-    @Nullable
-    public String falseDestination;
+    public int trueDestination;
+    public int falseDestination;
 
     @Override
     public void operate(IInterpreter in) {
         boolean bool = in.getBool(conditionName);
-        if (bool && trueDestination != null) {
+        if (bool) {
             in.jumpTo(trueDestination);
-        } else if (falseDestination != null) {
+        } else {
             in.jumpTo(falseDestination);
         }
     }

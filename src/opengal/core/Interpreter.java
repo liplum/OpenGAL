@@ -1,20 +1,16 @@
 package opengal.core;
 
 import opengal.api.IAction;
-import opengal.api.IOptions;
-import opengal.api.IText;
 import opengal.api.Listener;
-import opengal.excpetions.CurNodeNullException;
+import opengal.excpetions.InputNotGivenException;
+import opengal.excpetions.InvariantException;
 import opengal.excpetions.NoSuchActionException;
-import opengal.excpetions.NoSuchInputException;
 import opengal.excpetions.NoSuchValueException;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.function.Function;
 
 public class Interpreter implements IInterpreter {
@@ -23,11 +19,7 @@ public class Interpreter implements IInterpreter {
     private final Stack<Integer> calls = new Stack<>();
     private Node curNode;
     @Nullable
-    private IText textDisplayer;
-    @Nullable
     private Listener endListener;
-    @Nullable
-    private IOptions optionsHandler;
     @Nullable
     private ArrayList<Listener> beforeExecutes;
     @Nullable
@@ -35,17 +27,15 @@ public class Interpreter implements IInterpreter {
     @Nullable
     private ArrayList<Listener> onBounds;
     @NotNull
-    private final HashMap<String, Object> name2Input = new HashMap<>();
-    @NotNull
     private final HashMap<String, IAction> name2Action = new HashMap<>();
     @NotNull
-    private final HashMap<String, Object> values = new HashMap<>();
+    private final HashMap<String, Object> fields = new HashMap<>();
+    @NotNull
+    private final HashSet<String> invariants = new HashSet<>();
     @Nullable
     private Object curBound;
     @Nullable
     private Function<String, Object> metaTable;
-    private int selected;
-    private int optionNumber;
     private boolean isEnd = false;
 
     public void next() {
@@ -78,19 +68,8 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void uniform(String name, @NotNull Object value) {
-        values.put(name, value);
-    }
-
-    @Override
-    public @NotNull Object getUniform(String name) {
-        Object v = values.get(name);
-        if (v == null && metaTable != null) {
-            v = metaTable.apply(name);
-        }
-        if (v == null) {
-            throw new NoSuchValueException("Uniform " + name + " hasn't been set.");
-        }
-        return v;
+        fields.put(name, value);
+        invariants.add(name);
     }
 
     @Override
@@ -118,43 +97,28 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
-    public void setTextHandler(@NotNull IText handler) {
-        textDisplayer = handler;
-    }
-
-    @Override
     public void onEnd(@NotNull Listener listener) {
         endListener = listener;
-    }
-
-    public void setInput(@NotNull String name, @NotNull Object obj) {
-        name2Input.put(name, obj);
-    }
-
-    public void setText(int id) {
-        if (textDisplayer != null) {
-            textDisplayer.handleTextID(id);
-        }
     }
 
     /**
      * Jump to the block name.
      *
-     * @param blockName name
+     * @param index which index it jumps to
      */
-    public void jumpTo(@NotNull String blockName) {
-        // Actually, the name will be mapped to the index.
-        int startIndex = tree.getStartIndex(blockName);
+    public void jumpTo(final int index) {
         calls.push(index);
-        index = startIndex;
+        this.index = index;
     }
 
     @Override
     public void start() {
-        // Actually, the name will be mapped to the index.
-        int startIndex = tree.getStartIndex("Main");
-        calls.push(startIndex);
-        index = startIndex;
+        final Set<String> inputs = tree.inputs;
+        final Set<String> keys = fields.keySet();
+        if (inputs != null && !keys.containsAll(inputs)) {
+            throw new InputNotGivenException(tree);
+        }
+        jumpTo(0);
     }
 
     @Override
@@ -165,23 +129,16 @@ public class Interpreter implements IInterpreter {
         isEnd = calls.empty();
     }
 
-    public void setOptionNumber(int numer) {
-        optionNumber = numer;
-        if (optionsHandler != null) {
-            optionsHandler.handle(numer);
-        }
-    }
-
     /**
      * bind the target object
      *
      * @param name input name
-     * @throws NoSuchInputException raises when this name hasn't been inputted
+     * @throws InputNotGivenException raises when this name hasn't been inputted
      */
     public void bind(@NotNull String name) {
-        Object bound = name2Input.get(name);
+        Object bound = fields.get(name);
         if (bound == null) {
-            throw new NoSuchInputException(name + " hasn't been bound yet.");
+            throw new NoSuchValueException(tree, name);
         }
         curBound = bound;
         if (onBounds != null) {
@@ -196,35 +153,22 @@ public class Interpreter implements IInterpreter {
     }
 
     public boolean getBool(@NotNull String name) {
-        Object o = values.get(name);
+        Object o = fields.get(name);
         if (!(o instanceof Boolean) && metaTable != null) {
             o = metaTable.apply(name);
         }
         if (!(o instanceof Boolean)) {
-            throw new NoSuchValueException("Can't find value of " + name);
+            throw new NoSuchValueException(tree, name);
         }
         return (boolean) o;
-    }
-
-    public void setSelected(int number) {
-        selected = number;
-    }
-
-    public int getSelected() {
-        return selected;
     }
 
     public void doAction(@NotNull String actionName, @NotNull Object[] args) {
         IAction action = name2Action.get(actionName);
         if (action == null) {
-            throw new NoSuchActionException(actionName + " not found.");
+            throw new NoSuchActionException(tree, actionName);
         }
         action.invoke(args);
-    }
-
-    @Nullable
-    public Object getInput(@NotNull String name) {
-        return name2Input.get(name);
     }
 
     @Nullable
@@ -255,19 +199,10 @@ public class Interpreter implements IInterpreter {
         return curBound;
     }
 
-    @Override
-    public void setOptionHandler(@NotNull IOptions handler) {
-        optionsHandler = handler;
-    }
 
     @Override
     public void addAction(String name, IAction action) {
         name2Action.put(name, action);
-    }
-
-    @Override
-    public int getOptionNumber() {
-        return optionNumber;
     }
 
     @Override
@@ -276,22 +211,39 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    public void set(@NotNull String name, @NotNull Object value) {
+        if (invariants.contains(name)) {
+            throw new InvariantException(tree, name);
+        }
+        fields.put(name, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> @NotNull T get(@NotNull String name) {
+        Object v = fields.get(name);
+        if (v == null && metaTable != null) {
+            v = metaTable.apply(name);
+        }
+        if (v == null) {
+            throw new NoSuchValueException(tree, name);
+        }
+        return (T) v;
+    }
+
+    @Override
     public void reset() {
-        name2Input.clear();
-        values.clear();
+        fields.clear();
         calls.clear();
         name2Action.clear();
+        invariants.clear();
         beforeExecutes = null;
         afterExecutes = null;
-        textDisplayer = null;
         endListener = null;
-        optionsHandler = null;
         curBound = null;
         metaTable = null;
         curNode = null;
         tree = null;
-        selected = 0;
-        optionNumber = 0;
         index = 0;
     }
 }

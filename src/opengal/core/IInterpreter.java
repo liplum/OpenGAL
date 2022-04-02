@@ -1,8 +1,6 @@
 package opengal.core;
 
 import opengal.api.IAction;
-import opengal.api.IOptions;
-import opengal.api.IText;
 import opengal.api.Listener;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
@@ -15,8 +13,6 @@ public interface IInterpreter {
 
     void execute();
 
-    void setTextHandler(@NotNull IText handler);
-
     void onEnd(@NotNull Listener listener);
 
     void beforeExecute(@NotNull Listener listener);
@@ -25,53 +21,37 @@ public interface IInterpreter {
 
     void onBound(@NotNull Listener listener);
 
-    void setOptionHandler(@NotNull IOptions handler);
-
     void uniform(String name, @NotNull Object value);
 
-    @NotNull
-    Object getUniform(String name);
-
-    void setInput(@NotNull String name, @NotNull Object obj);
-
-    void setText(int id);
-
-    void jumpTo(@NotNull String blockName);
+    void jumpTo(final int index);
 
     void start();
-
-    void setOptionNumber(int count);
 
     void bind(@NotNull String name);
 
     void unbind();
 
+    @Nullable
+    Object getCurBound();
+
     boolean getBool(@NotNull String name);
-
-    void setSelected(int number);
-
-    int getSelected();
 
     void doAction(@NotNull String actionName, @NotNull Object[] args);
 
     @Nullable
-    Object getInput(@NotNull String name);
-
-    @Nullable Function<String, Object> getMetaTable();
+    Function<String, Object> getMetaTable();
 
     void setMetaTable(@NotNull Function<String, Object> metaTable);
 
-    @NotNull StoryTree getTree();
+    @NotNull
+    StoryTree getTree();
 
     void setTree(@NotNull StoryTree tree);
 
-    @NotNull Node getCurNode();
-
-    @Nullable Object getCurBound();
+    @NotNull
+    Node getCurNode();
 
     void addAction(String name, IAction action);
-
-    int getOptionNumber();
 
     void reset();
 
@@ -80,4 +60,9 @@ public interface IInterpreter {
     void returnBlock();
 
     int getCurIndex();
+
+    void set(@NotNull String name,@NotNull Object value);
+
+    @NotNull
+    <T> T get(@NotNull String name);
 }

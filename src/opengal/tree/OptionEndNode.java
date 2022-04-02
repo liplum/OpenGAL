@@ -4,14 +4,13 @@ import opengal.core.IInterpreter;
 
 import java.util.Map;
 
-public class OptionEndNode implements Node{
-    public Map<Integer, String> number2Destination;
+public class OptionEndNode implements Node {
+    public Map<Integer, Integer> number2Destination;
 
     @Override
     public void operate(IInterpreter in) {
-        String destination = number2Destination.get(in.getSelected());
-        if (destination != null) {
-            in.jumpTo(destination);
-        }
+        int option = in.get("option");
+        int destination = number2Destination.get(option);
+        in.jumpTo(destination);
     }
 }

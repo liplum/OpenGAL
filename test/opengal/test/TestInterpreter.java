@@ -22,7 +22,6 @@ public class TestInterpreter {
     public boolean silent = true;
 
     @Test
-    @Disabled
     public void test() {
         in.start();
         while (!in.isEnd()) {
@@ -32,6 +31,7 @@ public class TestInterpreter {
     }
 
     @Test
+    @Disabled
     public void benchmark() {
         for (int i = 0; i < 10000; i++) {
             in.start();
@@ -55,7 +55,7 @@ public class TestInterpreter {
 
     @BeforeEach
     public void genTree() {
-        output = new LinkedList<>();
+     /*   output = new LinkedList<>();
         ArrayList<StoryNode> nodes = new ArrayList<>();
         BindNode bUnit = new BindNode();
         bUnit.boundName = "Unit";
@@ -100,7 +100,7 @@ public class TestInterpreter {
         b2i.put("Main", 0);
         b2i.put("Like", 12);
         b2i.put("DontLike", 15);
-        tree = new StoryTree(nodes, b2i);
+        tree = new StoryTree(nodes);
         in = new Interpreter();
         in.setTree(tree);
         if (!silent) {
@@ -131,6 +131,12 @@ public class TestInterpreter {
         }
         in.setInput("Unit", "Unit#5978");
         in.setInput("Player", "Player#12138");
+        if (!silent) {
+            for (StoryNode node : tree.getNodes()) {
+                System.out.println(node.getClass().getSimpleName());
+            }
+            System.out.flush();
+        }*/
     }
 /*
 @file LandDay

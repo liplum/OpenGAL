@@ -2,12 +2,11 @@ package opengal.excpetions;
 
 import opengal.core.StoryTree;
 
-public class NoSuchValueException extends RuntimeException {
-    public NoSuchValueException(String message) {
+public class InvariantException extends RuntimeException{
+    public InvariantException(String message) {
         super(message);
     }
-
-    public NoSuchValueException(StoryTree tree, String message) {
+    public InvariantException(StoryTree tree, String message) {
         super(
                 tree.fileName != null ?
                         message + " in " + tree.fileName :
