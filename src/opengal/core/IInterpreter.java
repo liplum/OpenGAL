@@ -19,6 +19,12 @@ public interface IInterpreter {
 
     void onEnd(@NotNull Listener listener);
 
+    void beforeExecute(@NotNull Listener listener);
+
+    void afterExecute(@NotNull Listener listener);
+
+    void onBound(@NotNull Listener listener);
+
     void setOptionHandler(@NotNull IOptions handler);
 
     void uniform(String name, @NotNull Object value);
@@ -31,6 +37,8 @@ public interface IInterpreter {
     void setText(int id);
 
     void jumpTo(@NotNull String blockName);
+
+    void start();
 
     void setOptionNumber(int count);
 
@@ -70,4 +78,6 @@ public interface IInterpreter {
     boolean isEnd();
 
     void returnBlock();
+
+    int getCurIndex();
 }
