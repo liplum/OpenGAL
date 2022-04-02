@@ -3,10 +3,7 @@ package opengal.test;
 import opengal.core.Interpreter;
 import opengal.core.StoryTree;
 import opengal.tree.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.ArrayList;
@@ -19,14 +16,28 @@ public class TestInterpreter {
     public StoryTree tree;
     public Interpreter in;
     public LinkedList<String> output = new LinkedList<>();
-    public boolean silent = false;
+    public boolean silent = true;
+    Random random = new Random();
 
     @Test
     @Timeout(10)
+    @Disabled
+
     public void test() {
         in.start();
         while (!in.isEnd()) {
             in.execute();
+        }
+    }
+
+    @Test
+    public void benchmark() {
+        for (int i = 0; i < 1000000; i++) {
+            in.set("IsTrue", random.nextBoolean());
+            in.start();
+            while (!in.isEnd()) {
+                in.execute();
+            }
         }
     }
 
@@ -45,9 +56,11 @@ public class TestInterpreter {
     public void genTree() {
         in = new Interpreter();
         in.addAction("output", args -> {
-            output.add(in.getCurBound() + " ");
-            for (Object arg : args) {
-                output.add(arg.toString());
+            if (!silent) {
+                output.add(in.getCurBound() + " ");
+                for (Object arg : args) {
+                    output.add(arg.toString());
+                }
             }
         });
         ArrayList<Node> nodes = new ArrayList<>();
@@ -120,14 +133,15 @@ public class TestInterpreter {
         inputs.add("Plum");
         tree.inputs = inputs;
         in.uniform("Plum", "Plum#5978");
-        Random random = new Random();
-        in.set("IsTrue", true);
-        in.beforeExecute(() -> {
-            output.add("[" + in.getCurIndex() + "]");
-        });
-        in.afterExecute(() -> {
-            output.add("\n");
-        });
+        in.set("IsTrue", random.nextBoolean());
+        if (silent) {
+            in.beforeExecute(() -> {
+                output.add("[" + in.getCurIndex() + "]");
+            });
+            in.afterExecute(() -> {
+                output.add("\n");
+            });
+        }
         in.setTree(tree);
     }
 }
