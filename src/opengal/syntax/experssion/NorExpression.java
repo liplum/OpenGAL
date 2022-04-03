@@ -10,4 +10,9 @@ public class NorExpression implements Expression<Boolean>{
   public Boolean calculate(IInterpreter interpreter){
     return !exp.calculate(interpreter);
   }
+
+  @Override
+  public String toString(){
+    return "!" + exp;
+  }
 }

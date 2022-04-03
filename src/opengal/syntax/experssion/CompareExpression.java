@@ -4,6 +4,15 @@ import opengal.core.IInterpreter;
 import opengal.syntax.Expression;
 
 public class CompareExpression implements Expression<Boolean>{
+  private static final String[] opCodeMap = {
+      "==",
+      "!=",
+      ">",
+      "<",
+      ">=",
+      "<="
+  };
+
   public Expression<Object> a, b;
   public int opCode;
 
@@ -42,5 +51,14 @@ public class CompareExpression implements Expression<Boolean>{
       }
       default: throw new RuntimeException("unknow opcode: " + opCode);
     }
+  }
+
+  public String getOperator(){
+    return opCodeMap[opCode];
+  }
+
+  @Override
+  public String toString(){
+    return a + " " + getOperator() + " " + b;
   }
 }

@@ -1,17 +1,15 @@
 package opengal.syntax;
 
-import opengal.excpetions.AnalysisException;
 import opengal.excpetions.ExpressionException;
 import opengal.syntax.experssion.*;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class ExpressionParser implements IExpressionParser{
 
   private static final HashSet<String> BIN_OPERATOR = new HashSet<>(
       Arrays.asList(
-          "!=", ">=", "<=", "&&", "||"
+          "!=", ">=", "<=", "&&", "||", ".."
       )
   );
 
@@ -23,7 +21,7 @@ public class ExpressionParser implements IExpressionParser{
 
   ArrayList<String> tokens = new ArrayList<>();
 
-  HashSet<String>[] priorityMap = new HashSet[10];
+  HashSet<String>[] priorityMap = new HashSet[11];
 
   public ExpressionParser(Collection<String> tokens){
     this.tokens.addAll(tokens);
@@ -45,16 +43,41 @@ public class ExpressionParser implements IExpressionParser{
       priorityMap[i] = new HashSet<>();
     }
 
-    priorityMap[0].add("");
+    //priority 0: "(" ")"
+    priorityMap[1].add("=");
+    priorityMap[2].add("..");
+    priorityMap[3].add("||");
+    priorityMap[4].add("&&");
+    priorityMap[6].add("==");
+    priorityMap[6].add("!=");
+    priorityMap[7].add(">");
+    priorityMap[7].add("<");
+    priorityMap[7].add(">=");
+    priorityMap[7].add("<=");
+    priorityMap[8].add("+");
+    priorityMap[8].add("-");
+    priorityMap[9].add("*");
+    priorityMap[9].add("/");
+    priorityMap[9].add("%");
+    priorityMap[10].add("!");
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public <T> Expression<T> parse(){
-    return null;
+    ParseUnit root = new ParseUnit();
+    root.isRoot = true;
+
+    for(String token: tokens){
+      root.read(token);
+    }
+
+    return (Expression<T>) root.parse();
   }
 
   protected class ParseUnit{
     public int depth;
+    public boolean isRoot;
 
     protected ArrayList<String> tokens = new ArrayList<>();
     protected ArrayList<Object> symbolQueue = new ArrayList<>();
@@ -66,25 +89,29 @@ public class ExpressionParser implements IExpressionParser{
     boolean structMark;
 
     public void read(String token){
-      tokens.add(token);
-      if(token.equals("(")){
+      boolean mark = true;
+      for(int i = 0; i <= Math.min(depth, priorityMap.length - 1); i++){
+        if(priorityMap[i].contains(token) || token.equals("(") || token.equals(")")){
+          mark = false;
+          break;
+        }
+      }
+      if(mark) tokens.add(token);
+
+      /*if(token.equals("(")){
         structStack++;
         structMark = true;
       }
-      if(token.equals("}")){
+      if(token.equals(")")){
         structStack--;
         structMark = true;
       }
 
       if(structStack > 0){
-        if(curr == null){
-          units.add(curr = new ParseUnit());
-          curr.depth = 0;
-        }
         if(!structMark) curr.read(token);
         structMark = false;
         return;
-      }
+      }*///TODO：括弧没有解决，尝试标重新准化
 
       if(depth >= priorityMap.length) return;
       if(priorityMap[depth].contains(token)) symbolQueue.add(token);
@@ -130,22 +157,36 @@ public class ExpressionParser implements IExpressionParser{
 
               case "&&": result = handleBoolOpCode(result, i, 0);
                 break;
-
               case "||": result = handleBoolOpCode(result, i, 1);
                 break;
+
+              case "..":{
+                StringMergeExpression expr = new StringMergeExpression();
+                result = result == null ? associate(i, (a, b) -> {
+                  expr.a = (Expression<Object>) a.parse();
+                  expr.b = (Expression<Object>) b.parse();
+                  return expr;
+                }):
+                associate(result, i, (e, u) -> {
+                  expr.a = (Expression<Object>) e;
+                  expr.b = (Expression<Object>) u.parse();
+                  return expr;
+                });
+                break;
+              }
 
               case "=":{
                 AssignExpression<Object> expr = new AssignExpression<>();
                 result = result == null? associate(i, (a, b) -> {
                   Expression<?> ident = a.parse();
                   if(!(ident instanceof IdentExpression)) throw new ExpressionException("require identify but is >" + a + "< =" + b);
-                  expr.key = ((IdentExpression<?>)ident).key;
+                  expr.ident = (IdentExpression<Object>) ident;
                   expr.exp = (Expression<Object>) b.parse();
                   return expr;
                 }):
                 associate(result, i, (e, u) -> {
                   if(!(e instanceof IdentExpression)) throw new ExpressionException("require identify but is >" + e + "< =" + u);
-                  expr.key = ((IdentExpression<?>)e).key;
+                  expr.ident = (IdentExpression<Object>)e;
                   expr.exp = (Expression<Object>) u.parse();
                   return expr;
                 });
@@ -164,7 +205,7 @@ public class ExpressionParser implements IExpressionParser{
       }
       else{
         if(symbolQueue.size() == 1){
-          if(depth >= priorityMap.length){
+          if(depth >= priorityMap.length - 1){
             if(tokens.size() > 1) throw new ExpressionException("unexpected token at >" + this + "<");
             if(tokens.size() == 0) throw new ExpressionException("unexpected token at ><");
 
@@ -208,7 +249,7 @@ public class ExpressionParser implements IExpressionParser{
         }
       }
 
-      return result;
+      return depth == 0 && !isRoot? new ParExpression<>(result): result;
     }
 
     @SuppressWarnings("unchecked")
@@ -281,9 +322,11 @@ public class ExpressionParser implements IExpressionParser{
     @Override
     public String toString(){
       StringBuilder builder = new StringBuilder();
+      if(depth == 0 && !isRoot) builder.append("(");
       for(String token: tokens){
         builder.append(token).append(" ");
       }
+      if(depth == 0 && !isRoot) builder.append(")");
       return builder.toString();
     }
   }

@@ -10,4 +10,9 @@ public class IdentExpression<T> implements Expression<T>{
   public T calculate(IInterpreter interpreter){
     return interpreter.get(key);
   }
+
+  @Override
+  public String toString(){
+    return key;
+  }
 }

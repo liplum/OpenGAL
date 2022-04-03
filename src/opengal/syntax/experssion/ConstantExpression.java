@@ -10,4 +10,9 @@ public class ConstantExpression<T> implements Expression<T>{
   public T calculate(IInterpreter interpreter){
     return value;
   }
+
+  @Override
+  public String toString(){
+    return value.toString();
+  }
 }
