@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedList;
 
-@ExtendWith(Timing.class)
+@ExtendWith({Timing.class, Memory.class})
 public class TestGalInterpreter {
     public NodeTree tree;
     public Interpreter in;

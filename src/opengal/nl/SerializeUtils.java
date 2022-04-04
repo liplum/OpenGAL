@@ -1,6 +1,7 @@
 package opengal.nl;
 
 import opengal.excpetions.UnmappedObjectException;
+import opengal.syntax.Expression;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
@@ -43,5 +44,13 @@ public class SerializeUtils {
                 return input.readBoolean();
         }
         throw new UnmappedObjectException("Can't map type code " + type);
+    }
+
+    public static void serializeExpr(DataOutput output, Expression<?> expr){
+
+    }
+
+    public static <T> Expression<T> serializeExpr(DataInput input){
+        return null;
     }
 }

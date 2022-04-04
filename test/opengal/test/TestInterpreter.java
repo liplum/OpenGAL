@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.LinkedList;
 import java.util.Random;
 
-@ExtendWith(Timing.class)
+@ExtendWith({Timing.class, Memory.class})
 public class TestInterpreter {
     public NodeTree tree;
     public Interpreter in;
