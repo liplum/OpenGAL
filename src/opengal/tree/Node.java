@@ -7,8 +7,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 public interface Node {
-    String getIdentity();
-
     void serialize(DataOutput output) throws IOException;
 
     void deserialize(DataInput input) throws IOException;

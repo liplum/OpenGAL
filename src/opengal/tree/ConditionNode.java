@@ -12,11 +12,6 @@ public class ConditionNode implements Node {
     public int falseDestination;
 
     @Override
-    public String getIdentity() {
-        return "If";
-    }
-
-    @Override
     public void serialize(DataOutput output) throws IOException {
         output.writeUTF(conditionName);
         output.writeInt(trueDestination);

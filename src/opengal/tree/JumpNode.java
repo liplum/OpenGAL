@@ -8,10 +8,6 @@ import java.io.IOException;
 
 public class JumpNode implements Node {
     public int destination;
-    @Override
-    public String getIdentity() {
-        return "Jump";
-    }
 
     @Override
     public void serialize(DataOutput output) throws IOException {

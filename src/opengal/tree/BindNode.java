@@ -8,10 +8,6 @@ import java.io.IOException;
 
 public class BindNode implements Node{
     public String boundName;
-    @Override
-    public String getIdentity() {
-        return "Bind";
-    }
 
     @Override
     public void serialize(DataOutput output) throws IOException {

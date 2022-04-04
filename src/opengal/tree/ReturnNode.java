@@ -7,10 +7,6 @@ import java.io.DataOutput;
 
 public class ReturnNode implements Node{
     public static final ReturnNode X = new ReturnNode();
-    @Override
-    public String getIdentity() {
-        return "Return";
-    }
 
     @Override
     public void serialize(DataOutput output) {

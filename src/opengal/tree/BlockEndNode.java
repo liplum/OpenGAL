@@ -7,10 +7,6 @@ import java.io.DataOutput;
 
 public class BlockEndNode implements Node{
     public static final BlockEndNode X = new BlockEndNode();
-    @Override
-    public String getIdentity() {
-        return "BlockEnd";
-    }
 
     @Override
     public void serialize(DataOutput output) {

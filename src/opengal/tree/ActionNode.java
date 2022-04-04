@@ -12,11 +12,6 @@ public class ActionNode implements Node {
     public Object[] args;
 
     @Override
-    public String getIdentity() {
-        return "Action";
-    }
-
-    @Override
     public void serialize(DataOutput output) throws IOException {
         output.writeUTF(actionName);
         output.writeInt(args.length);

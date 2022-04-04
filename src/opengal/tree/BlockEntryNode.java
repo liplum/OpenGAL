@@ -8,10 +8,6 @@ import java.io.IOException;
 
 public class BlockEntryNode implements Node {
     public int blockHead;
-    @Override
-    public String getIdentity() {
-        return "BlockEntry";
-    }
 
     @Override
     public void serialize(DataOutput output) throws IOException {

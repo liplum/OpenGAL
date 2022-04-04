@@ -14,11 +14,6 @@ public class YieldNode implements Node {
     public Object value;
 
     @Override
-    public String getIdentity() {
-        return "Yield";
-    }
-
-    @Override
     public void serialize(DataOutput output) throws IOException {
         SerializeUtils.serializeObj(output, value);
     }

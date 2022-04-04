@@ -17,6 +17,7 @@ public class ExprTest {
     );
 
     @Test
+    @Disabled
     public void testExpr() {
         //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
         ExpressionParser parser = new ExpressionParser(tokens);
@@ -24,9 +25,8 @@ public class ExprTest {
     }
 
     @Test
-    @Disabled
     public void benchmark() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             ExpressionParser parser = new ExpressionParser(tokens);
             expr = parser.parse();
         }

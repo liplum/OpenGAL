@@ -6,10 +6,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 
 public class UnbindNode implements Node{
-    @Override
-    public String getIdentity() {
-        return "Unbind";
-    }
 
     @Override
     public void serialize(DataOutput output) {
