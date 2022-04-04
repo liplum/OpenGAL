@@ -128,7 +128,7 @@ public class SerializeUtils {
     }
 
     public static <T> Iterator<T> singleIt(T e) {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             boolean hasNext = true;
 
             @Override

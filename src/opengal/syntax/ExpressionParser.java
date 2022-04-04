@@ -21,6 +21,7 @@ public class ExpressionParser implements IExpressionParser{
 
   ArrayList<String> tokens = new ArrayList<>();
 
+  @SuppressWarnings("unchecked")
   HashSet<String>[] priorityMap = new HashSet[11];
 
   public ExpressionParser(Collection<String> tokens){
