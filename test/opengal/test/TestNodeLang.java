@@ -50,7 +50,6 @@ public class TestNodeLang {
             }
         });
 
-        tree = GenTestTree.genTree();
         in.uniform("Plum", "Plum#5978");
         in.set("IsTrue", random.nextBoolean());
         if (!silent) {

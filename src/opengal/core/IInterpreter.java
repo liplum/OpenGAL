@@ -5,9 +5,8 @@ import opengal.api.Listener;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+import opengal.excpetions.NoSuchValueException;
 public interface IInterpreter {
-
     void execute();
 
     void onEnd(@NotNull Listener listener);
@@ -15,6 +14,8 @@ public interface IInterpreter {
     void beforeExecute(@NotNull Listener listener);
 
     void afterExecute(@NotNull Listener listener);
+
+    void onBlocked(@NotNull Listener listener);
 
     void onBound(@NotNull Listener listener);
 
@@ -47,7 +48,15 @@ public interface IInterpreter {
 
     void addAction(@NotNull String name, IAction action);
 
+    /**
+     * Reset all fields of the interpreter.
+     */
     void reset();
+
+    /**
+     * Reset all states of the interpreter.
+     */
+    void clearRuntimeStates();
 
     boolean isEnd();
 
@@ -59,7 +68,19 @@ public interface IInterpreter {
 
     void set(@NotNull String name, @NotNull Object value);
 
+    /**
+     * Gets the existed value
+     * @param name the key
+     * @param <T> which type you want (NOTE: not guarantee it's)
+     * @exception ClassCastException raises if the value doesn't match the type
+     * @exception NoSuchValueException raises if the value doesn't exist
+     * @return the value
+     */
     @NotNull <T> T get(@NotNull String name);
 
     void terminate();
+
+    void blockExecute();
+
+    void continueExecute();
 }

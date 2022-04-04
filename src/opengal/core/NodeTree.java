@@ -17,6 +17,8 @@ public class NodeTree {
     @Nullable
     public String fileName;
     @NotNull
+    public String nothingName = "Nothing";
+    @NotNull
     private final HashMap<String, String> metas = new HashMap<>();
 
     public NodeTree(

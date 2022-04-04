@@ -18,6 +18,8 @@ public class Interpreter implements IInterpreter {
     @Nullable
     private Listener endListener;
     @Nullable
+    private Listener blockedListener;
+    @Nullable
     private ArrayList<Listener> beforeExecutes;
     @Nullable
     private ArrayList<Listener> afterExecutes;
@@ -33,6 +35,7 @@ public class Interpreter implements IInterpreter {
     private Object curBound;
     private boolean isEnd = false;
     private boolean noNext = false;
+    private boolean isExecuting = true;
 
     @Override
     public boolean isEnd() {
@@ -43,6 +46,7 @@ public class Interpreter implements IInterpreter {
     public void execute() {
         try {
             curNode = tree.get(index);
+            if (!isExecuting) return;
             if (beforeExecutes != null) {
                 for (Listener before : beforeExecutes) {
                     before.on();
@@ -104,6 +108,11 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    public void onBlocked(@NotNull Listener listener) {
+        blockedListener = listener;
+    }
+
+    @Override
     public void pushIndex() {
         calls.push(index);
     }
@@ -128,6 +137,25 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    public void blockExecute() {
+        if (!isExecuting) {
+            throw new ExecutionStatusException("Can't block from blocked.");
+        }
+        isExecuting = false;
+        if (blockedListener != null) {
+            blockedListener.on();
+        }
+    }
+
+    @Override
+    public void continueExecute() {
+        if (isExecuting) {
+            throw new ExecutionStatusException("Can't resume from non-blocked.");
+        }
+        isExecuting = true;
+    }
+
+    @Override
     public void start() {
         if (tree == null) {
             throw new InterpretException("No tree");
@@ -137,7 +165,11 @@ public class Interpreter implements IInterpreter {
         if (!keys.containsAll(inputs)) {
             throw new InputNotGivenException(tree);
         }
+        String nothingName = tree.nothingName;
+        fields.put(nothingName, OpenGAL.Nothing);
+        invariants.add(nothingName);
         this.index = 0;
+        calls.clear();
         unbind();
     }
 
@@ -150,7 +182,6 @@ public class Interpreter implements IInterpreter {
     public void popIndex() {
         calls.pop();
     }
-
 
     /**
      * bind the target object
@@ -252,5 +283,15 @@ public class Interpreter implements IInterpreter {
         curNode = null;
         tree = null;
         index = 0;
+    }
+
+    @Override
+    public void clearRuntimeStates() {
+        calls.clear();
+        fields.clear();
+        invariants.clear();
+        index = 0;
+        curBound = null;
+        curNode = null;
     }
 }
