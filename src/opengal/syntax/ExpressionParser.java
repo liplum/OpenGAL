@@ -43,23 +43,25 @@ public class ExpressionParser implements IExpressionParser{
       priorityMap[i] = new HashSet<>();
     }
 
-    //priority 0: "(" ")"
-    priorityMap[1].add("=");
-    priorityMap[2].add("..");
-    priorityMap[3].add("||");
-    priorityMap[4].add("&&");
-    priorityMap[6].add("==");
-    priorityMap[6].add("!=");
-    priorityMap[7].add(">");
-    priorityMap[7].add("<");
-    priorityMap[7].add(">=");
-    priorityMap[7].add("<=");
-    priorityMap[8].add("+");
-    priorityMap[8].add("-");
-    priorityMap[9].add("*");
-    priorityMap[9].add("/");
-    priorityMap[9].add("%");
-    priorityMap[10].add("!");
+    //priority 0 "(" ")"
+    priorityMap[0].add("=");
+    priorityMap[1].add("..");
+    priorityMap[2].add("||");
+    priorityMap[3].add("&&");
+    priorityMap[5].add("==");
+    priorityMap[5].add("!=");
+    priorityMap[6].add(">");
+    priorityMap[6].add("<");
+    priorityMap[6].add(">=");
+    priorityMap[6].add("<=");
+    priorityMap[7].add("+");
+    priorityMap[7].add("-");
+    priorityMap[8].add("*");
+    priorityMap[8].add("/");
+    priorityMap[8].add("%");
+    priorityMap[9].add("!");
+    priorityMap[10].add("(");
+    priorityMap[10].add(")");
   }
 
   @Override
@@ -84,12 +86,36 @@ public class ExpressionParser implements IExpressionParser{
     protected ArrayList<ParseUnit> units = new ArrayList<>();
 
     protected ParseUnit curr;
-
-    int structStack = 0;
-    boolean structMark;
+    protected float bracketCount = 0;
 
     public void read(String token){
       boolean mark = true;
+
+      if(token.equals("(")){
+        bracketCount++;
+      }
+      else if(token.equals(")")){
+        bracketCount--;
+        if(bracketCount == 0 && depth < priorityMap.length){
+          curr.read(token);
+          curr.tokens.add(token);
+          return;
+        }
+      }
+
+      if(bracketCount > 0){
+        if(depth <= priorityMap.length){
+          if(curr == null && depth < priorityMap.length){
+            units.add(curr = new ParseUnit());
+            curr.depth = depth + 1;
+            symbolQueue.add(curr);
+          }
+          tokens.add(token);
+          if(curr != null) curr.read(token);
+        }
+        return;
+      }
+
       for(int i = 0; i <= Math.min(depth, priorityMap.length - 1); i++){
         if(priorityMap[i].contains(token) || token.equals("(") || token.equals(")")){
           mark = false;
@@ -97,21 +123,6 @@ public class ExpressionParser implements IExpressionParser{
         }
       }
       if(mark) tokens.add(token);
-
-      /*if(token.equals("(")){
-        structStack++;
-        structMark = true;
-      }
-      if(token.equals(")")){
-        structStack--;
-        structMark = true;
-      }
-
-      if(structStack > 0){
-        if(!structMark) curr.read(token);
-        structMark = false;
-        return;
-      }*///TODO：括弧没有解决，尝试标重新准
 
       if(depth >= priorityMap.length) return;
       if(priorityMap[depth].contains(token)) symbolQueue.add(token);
@@ -129,8 +140,10 @@ public class ExpressionParser implements IExpressionParser{
       if(symbolQueue.size() > 1){
         for(int i = 0; i < symbolQueue.size(); i++){
           Object symbol = symbolQueue.get(i);
+
           if(symbol instanceof String){
             switch((String) symbol){
+
               case "+": result = handleOpCode(result, i, 0);
                 break;
               case "-": result = handleOpCode(result, i, 1);
@@ -206,12 +219,19 @@ public class ExpressionParser implements IExpressionParser{
       else{
         if(symbolQueue.size() == 1){
           if(depth >= priorityMap.length - 1){
-            if(tokens.size() > 1) throw new ExpressionException("unexpected token at >" + this + "<");
+            if(tokens.size() > 1 && !tokens.get(0).equals("(")) throw new ExpressionException("unexpected token at >" + this + "<");
             if(tokens.size() == 0) throw new ExpressionException("unexpected token at ><");
 
             String token = tokens.get(0);
 
-            if(token.startsWith("@")){
+            if(token.equals("(")){
+              ParseUnit u = new ParseUnit();
+              for(int i = 1; i < tokens.size() - 1; i++){
+                u.read(tokens.get(i));
+              }
+              result = u.parse();
+            }
+            else if(token.startsWith("@")){
               result = new IdentExpression<>();
               ((IdentExpression<?>) result).key = token;
             }
@@ -323,8 +343,8 @@ public class ExpressionParser implements IExpressionParser{
     public String toString(){
       StringBuilder builder = new StringBuilder();
       if(depth == 0 && !isRoot) builder.append("(");
-      for(String token: tokens){
-        builder.append(token).append(" ");
+      for(Object token: depth >= priorityMap.length? tokens: symbolQueue){
+        builder.append(token);
       }
       if(depth == 0 && !isRoot) builder.append(")");
       return builder.toString();
