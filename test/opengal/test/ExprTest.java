@@ -7,7 +7,9 @@ import java.util.List;
 
 public class ExprTest{
   public static void main(String[] args){
-    ExpressionParser parser = new ExpressionParser(List.of("@au", "=", "(", "@c", "+", "$u", ")", "*", "30"));
-    System.out.println(parser.parse());
+    ExpressionParser parser = new ExpressionParser(List.of("@au", "=", "(", "@c", "*", "(", "$u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"));
+    long nano = System.nanoTime();
+    parser.parse();
+    System.out.println(System.nanoTime() - nano);
   }
 }
