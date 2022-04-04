@@ -111,7 +111,7 @@ public class ExpressionParser implements IExpressionParser{
         if(!structMark) curr.read(token);
         structMark = false;
         return;
-      }*///TODO：括弧没有解决，尝试标重新准化
+      }*///TODO：括弧没有解决，尝试标重新准
 
       if(depth >= priorityMap.length) return;
       if(priorityMap[depth].contains(token)) symbolQueue.add(token);

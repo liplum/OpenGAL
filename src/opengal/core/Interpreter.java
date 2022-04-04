@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class Interpreter implements IInterpreter {
-    private StoryTree tree;
+    private NodeTree tree;
     private int index;
     @NotNull
     private final Stack<Integer> calls = new Stack<>();
@@ -132,9 +132,9 @@ public class Interpreter implements IInterpreter {
         if (tree == null) {
             throw new InterpretException("No tree");
         }
-        final Set<String> inputs = tree.inputs;
+        final Set<String> inputs = tree.getInputs();
         final Set<String> keys = fields.keySet();
-        if (inputs != null && !keys.containsAll(inputs)) {
+        if (!keys.containsAll(inputs)) {
             throw new InputNotGivenException(tree);
         }
         this.index = 0;
@@ -192,11 +192,11 @@ public class Interpreter implements IInterpreter {
     }
 
     @NotNull
-    public StoryTree getTree() {
+    public NodeTree getTree() {
         return tree;
     }
 
-    public void setTree(@NotNull StoryTree tree) {
+    public void setTree(@NotNull NodeTree tree) {
         this.tree = tree;
     }
 

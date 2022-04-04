@@ -1,6 +1,6 @@
 package opengal.syntax;
 
-import opengal.core.StoryTree;
+import opengal.core.NodeTree;
 import opengal.excpetions.AnalysisException;
 import opengal.syntax.keywords.ElseKw;
 import opengal.syntax.keywords.EntryKw;
@@ -42,12 +42,12 @@ public class Analyzer implements IAnalyzer {
 
     @Override
     @NotNull
-    public StoryTree analyze(@NotNull Reader reader) {
+    public NodeTree analyze(@NotNull Reader reader) {
         return null;
     }
 
     @NotNull
-    public StoryTree analyze(@NotNull String code) {
+    public NodeTree analyze(@NotNull String code) {
         StringReader reader = new StringReader(code);
         int c;
         try{
@@ -121,12 +121,12 @@ public class Analyzer implements IAnalyzer {
             throw new RuntimeException(e);
         }
 
-        return new StoryTree(context.allNodes);
+        return new NodeTree(context.allNodes);
     }
 
     @Override
     @NotNull
-    public String generate(@NotNull StoryTree tree) {
+    public String generate(@NotNull NodeTree tree) {
         return "";
     }
 }

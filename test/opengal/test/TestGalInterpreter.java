@@ -1,7 +1,7 @@
 package opengal.test;
 
 import opengal.core.Interpreter;
-import opengal.core.StoryTree;
+import opengal.core.NodeTree;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -12,7 +12,7 @@ import java.util.LinkedList;
 
 @ExtendWith(Timing.class)
 public class TestGalInterpreter {
-    public StoryTree tree;
+    public NodeTree tree;
     public Interpreter in;
     public LinkedList<String> output = new LinkedList<>();
     public boolean silent = true;

@@ -38,9 +38,9 @@ public interface IInterpreter {
     void doAction(@NotNull String actionName, @NotNull Object[] args);
 
     @NotNull
-    StoryTree getTree();
+    NodeTree getTree();
 
-    void setTree(@NotNull StoryTree tree);
+    void setTree(@NotNull NodeTree tree);
 
     @NotNull
     Node getCurNode();

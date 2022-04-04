@@ -9,10 +9,10 @@ import java.io.FileReader;
 
 public class Compiler {
     public IAnalyzer analyzer;
-    public StoryTree tree;
+    public NodeTree tree;
 
     @NotNull
-    public StoryTree compile(@NotNull File file) {
+    public NodeTree compile(@NotNull File file) {
         FileReader reader;
         try {
             reader = new FileReader(file);
@@ -23,7 +23,7 @@ public class Compiler {
     }
 
     @NotNull
-    public StoryTree compile(@NotNull String source) {
+    public NodeTree compile(@NotNull String source) {
         return analyzer.analyze(source);
     }
 }

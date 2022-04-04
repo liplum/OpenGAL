@@ -1,15 +1,15 @@
 package opengal.syntax;
 
-import opengal.core.StoryTree;
+import opengal.core.NodeTree;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Reader;
 
 public interface IAnalyzer {
     @NotNull
-    StoryTree analyze(@NotNull Reader reader);
+    NodeTree analyze(@NotNull Reader reader);
     @NotNull
-    StoryTree analyze(@NotNull String code);
+    NodeTree analyze(@NotNull String code);
     @NotNull
-    String generate(@NotNull StoryTree tree);
+    String generate(@NotNull NodeTree tree);
 }
