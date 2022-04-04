@@ -1,13 +1,13 @@
 package opengal.excpetions;
 
-import opengal.core.StoryTree;
+import opengal.core.NodeTree;
 
 public class NoSuchValueException extends RuntimeException {
     public NoSuchValueException(String message) {
         super(message);
     }
 
-    public NoSuchValueException(StoryTree tree, String message) {
+    public NoSuchValueException(NodeTree tree, String message) {
         super(
                 tree.fileName != null ?
                         message + " in " + tree.fileName :

@@ -1,12 +1,12 @@
 package opengal.excpetions;
 
-import opengal.core.StoryTree;
+import opengal.core.NodeTree;
 
 public class InvariantException extends RuntimeException{
     public InvariantException(String message) {
         super(message);
     }
-    public InvariantException(StoryTree tree, String message) {
+    public InvariantException(NodeTree tree, String message) {
         super(
                 tree.fileName != null ?
                         message + " in " + tree.fileName :
