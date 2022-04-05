@@ -35,4 +35,8 @@ public class ConditionNode implements Node {
             in.jumpTo(falseDestination);
         }
     }
+    @Override
+    public String toString() {
+        return ":if " + condition;
+    }
 }

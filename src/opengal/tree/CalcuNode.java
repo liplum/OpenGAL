@@ -25,4 +25,9 @@ public class CalcuNode implements Node {
     public void operate(IInterpreter in) {
         expr.calculate(in);
     }
+
+    @Override
+    public String toString() {
+        return expr.toString();
+    }
 }

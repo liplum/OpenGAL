@@ -22,4 +22,9 @@ public class StopNode implements Node{
     public void operate(IInterpreter in) {
         in.terminate();
     }
+
+    @Override
+    public String toString() {
+        return ":stop";
+    }
 }

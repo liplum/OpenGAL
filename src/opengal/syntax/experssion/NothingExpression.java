@@ -33,4 +33,9 @@ public class NothingExpression implements Expression<Object> {
     public Iterator<Expression<?>> iterator() {
         return Collections.emptyIterator();
     }
+
+    @Override
+    public String toString() {
+        return "Nothing";
+    }
 }

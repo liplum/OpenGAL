@@ -22,4 +22,9 @@ public class ReturnNode implements Node{
     public void operate(IInterpreter in) {
         in.rollbackPopIndex();
     }
+
+    @Override
+    public String toString() {
+        return ":return";
+    }
 }

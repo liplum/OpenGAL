@@ -5,7 +5,7 @@ import opengal.core.IInterpreter;
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public class UnbindNode implements Node{
+public class UnbindNode implements Node {
 
     @Override
     public void serialize(DataOutput output) {
@@ -20,5 +20,10 @@ public class UnbindNode implements Node{
     @Override
     public void operate(IInterpreter in) {
         in.unbind();
+    }
+
+    @Override
+    public String toString() {
+        return ":unbind";
     }
 }

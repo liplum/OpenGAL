@@ -34,4 +34,9 @@ public class YieldNode implements Node {
         in.set("__yield__", expr.calculate(in));
         in.blockExecute();
     }
+
+    @Override
+    public String toString() {
+        return ":yield " + expr;
+    }
 }

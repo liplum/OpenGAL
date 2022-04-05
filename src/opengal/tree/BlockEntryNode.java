@@ -24,4 +24,9 @@ public class BlockEntryNode implements Node {
         in.pushIndex();
         in.jumpTo(blockHead + 1);
     }
+
+    @Override
+    public String toString() {
+        return ":entry " + blockHead;
+    }
 }

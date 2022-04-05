@@ -234,7 +234,7 @@ public class ExpressionParser implements IExpressionParser{
             }
             else if(token.startsWith("@")){
               result = new IdentExpression<>();
-              ((IdentExpression<?>) result).key = token;
+              ((IdentExpression<?>) result).key = token.substring(1);
             }
             else{
               boolean isNumber = true, sym = true;

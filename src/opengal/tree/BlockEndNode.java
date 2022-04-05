@@ -5,7 +5,7 @@ import opengal.core.IInterpreter;
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public class BlockEndNode implements Node{
+public class BlockEndNode implements Node {
     public static final BlockEndNode X = new BlockEndNode();
 
     @Override
@@ -21,5 +21,10 @@ public class BlockEndNode implements Node{
     @Override
     public void operate(IInterpreter in) {
         in.popIndex();
+    }
+
+    @Override
+    public String toString() {
+        return ":end";
     }
 }

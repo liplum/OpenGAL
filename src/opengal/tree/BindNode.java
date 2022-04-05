@@ -6,7 +6,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class BindNode implements Node{
+public class BindNode implements Node {
     public String boundName;
 
     @Override
@@ -22,5 +22,11 @@ public class BindNode implements Node{
     @Override
     public void operate(IInterpreter in) {
         in.bind(boundName);
+    }
+
+
+    @Override
+    public String toString() {
+        return ":bind @" + boundName;
     }
 }

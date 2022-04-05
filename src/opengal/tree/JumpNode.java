@@ -23,4 +23,8 @@ public class JumpNode implements Node {
     public void operate(IInterpreter in) {
         in.jumpTo(destination);
     }
+    @Override
+    public String toString() {
+        return ":jump " + destination;
+    }
 }
