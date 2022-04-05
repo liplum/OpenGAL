@@ -1,6 +1,7 @@
-package opengal.test;
+package opengal.utils;
 
 import opengal.core.NodeTree;
+import opengal.syntax.experssion.IdentExpression;
 import opengal.tree.*;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class GenTestTree {
         a5.actionName = "output";
         a5.args = new Object[]{"NO!"};
         ConditionNode ifTrue = new ConditionNode();
-        ifTrue.conditionName = "IsTrue";
+        ifTrue.condition = new IdentExpression<>("IsTrue");
         ifTrue.trueDestination = 3;
         ifTrue.falseDestination = 6;
         BindNode bPlum = new BindNode();

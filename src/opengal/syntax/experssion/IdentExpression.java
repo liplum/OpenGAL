@@ -1,6 +1,7 @@
 package opengal.syntax.experssion;
 
 import opengal.core.IInterpreter;
+import opengal.nl.SerializeUtils;
 import opengal.syntax.Expression;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,8 +11,15 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class IdentExpression<T> implements Expression<T>{
+public final class IdentExpression<T> implements Expression<T>{
   public String key;
+
+  public IdentExpression(String key) {
+    this.key = key;
+  }
+
+  public IdentExpression() {
+  }
 
   @Override
   public T calculate(IInterpreter interpreter){
@@ -25,6 +33,7 @@ public class IdentExpression<T> implements Expression<T>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     output.writeUTF(key);
   }
 

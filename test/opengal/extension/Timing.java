@@ -1,4 +1,4 @@
-package opengal.test;
+package opengal.extension;
 
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 
+@SuppressWarnings("RedundantThrows")
 public class Timing implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final Logger logger = Logger.getLogger(Timing.class.getName());

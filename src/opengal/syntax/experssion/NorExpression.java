@@ -10,8 +10,15 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class NorExpression implements Expression<Boolean>{
+public final class  NorExpression implements Expression<Boolean>{
   public Expression<Boolean> exp;
+
+  public NorExpression(Expression<Boolean> exp) {
+    this.exp = exp;
+  }
+
+  public NorExpression() {
+  }
 
   @Override
   public Boolean calculate(IInterpreter interpreter){
@@ -25,6 +32,7 @@ public class NorExpression implements Expression<Boolean>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     exp.serialize(output);
   }
 

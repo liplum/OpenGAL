@@ -10,8 +10,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class ParExpression<T> implements Expression<T>{
-  Expression<T> expr;
+public final class ParExpression<T> implements Expression<T>{
+  public Expression<T> expr;
 
   public ParExpression() {
   }
@@ -32,11 +32,13 @@ public class ParExpression<T> implements Expression<T>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     expr.serialize(output);
   }
 
   @Override
   public void deserialize(DataInput input) throws IOException {
+    expr = SerializeUtils.readByID(input.readByte());
     expr.deserialize(input);
   }
   @NotNull

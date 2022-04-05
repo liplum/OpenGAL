@@ -11,8 +11,15 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class ConstantExpression<T> implements Expression<T>{
+public final class ConstantExpression<T> implements Expression<T>{
   public T value;
+
+  public ConstantExpression(T value) {
+    this.value = value;
+  }
+
+  public ConstantExpression() {
+  }
 
   @Override
   public T calculate(IInterpreter interpreter){
@@ -26,6 +33,7 @@ public class ConstantExpression<T> implements Expression<T>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     SerializeUtils.serializeObj(output,value);
   }
 

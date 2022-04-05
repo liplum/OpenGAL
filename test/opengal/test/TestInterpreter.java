@@ -2,22 +2,26 @@ package opengal.test;
 
 import opengal.core.Interpreter;
 import opengal.core.NodeTree;
+import opengal.extension.Memory;
+import opengal.extension.Timing;
+import opengal.utils.GenTestTree;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedList;
 import java.util.Random;
 
+@SuppressWarnings("CodeBlock2Expr")
 @ExtendWith({Timing.class, Memory.class})
 public class TestInterpreter {
-    public NodeTree tree;
-    public Interpreter in;
-    public LinkedList<String> output = new LinkedList<>();
+    static public NodeTree tree;
+    static public Interpreter in;
+    static public LinkedList<String> output = new LinkedList<>();
     public boolean silent = true;
     Random random = new Random();
 
     @Test
-    @Timeout(10)
+    @Tag("fast")
     public void test() {
         in.start();
         while (!in.isEnd()) {
@@ -26,9 +30,9 @@ public class TestInterpreter {
     }
 
     @Test
-    @Disabled
+    @Tag("slow")
     public void benchmark() {
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 1000; i++) {
             in.set("IsTrue", random.nextBoolean());
             in.start();
             while (!in.isEnd()) {

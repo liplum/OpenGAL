@@ -1,8 +1,13 @@
 package opengal.test;
 
+import opengal.extension.Memory;
+import opengal.extension.Timing;
 import opengal.syntax.Expression;
 import opengal.syntax.ExpressionParser;
+import opengal.utils.Lists;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -12,12 +17,12 @@ import java.util.List;
 public class ExprTest {
     Expression<?> expr;
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
-    List<String> tokens = List.of(
+    List<String> tokens = Lists.of(
             "@au", "=", "(", "@c", "*", "(", "$u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
 
     @Test
-    @Disabled
+    @Tag("fast")
     public void testExpr() {
         //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
         ExpressionParser parser = new ExpressionParser(tokens);
@@ -25,6 +30,7 @@ public class ExprTest {
     }
 
     @Test
+    @Tag("slow")
     public void benchmark() {
         for (int i = 0; i < 1000000; i++) {
             ExpressionParser parser = new ExpressionParser(tokens);

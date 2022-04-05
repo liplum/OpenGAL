@@ -10,21 +10,33 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class BoolOperatorExpression implements Expression<Boolean>{
+public final class BoolOperatorExpression implements Expression<Boolean>{
   private static final String[] opCodeMap = {
       "&&",
       "||"
   };
 
+  public static final int
+    And = 0,Or = 1;
+
   public Expression<Boolean> a, b;
   public int opCode;
+
+  public BoolOperatorExpression(int opCode,Expression<Boolean> a, Expression<Boolean> b) {
+    this.opCode = opCode;
+    this.a = a;
+    this.b = b;
+  }
+
+  public BoolOperatorExpression() {
+  }
 
   @Override
   public Boolean calculate(IInterpreter interpreter){
     switch(opCode){
       case 0: return a.calculate(interpreter) && b.calculate(interpreter); // &&
       case 1: return a.calculate(interpreter) || b.calculate(interpreter); // ||
-      default: throw new RuntimeException("unknow opcode: " + opCode);
+      default: throw new RuntimeException("unknown opcode: " + opCode);
     }
   }
 
@@ -39,6 +51,7 @@ public class BoolOperatorExpression implements Expression<Boolean>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     output.writeByte(opCode);
     a.serialize(output);
     b.serialize(output);
@@ -47,7 +60,9 @@ public class BoolOperatorExpression implements Expression<Boolean>{
   @Override
   public void deserialize(DataInput input) throws IOException {
     opCode = input.readByte();
+    a = SerializeUtils.readByID(input.readByte());
     a.deserialize(input);
+    b = SerializeUtils.readByID(input.readByte());
     b.deserialize(input);
   }
   @NotNull

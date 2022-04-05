@@ -10,7 +10,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class CompareExpression implements Expression<Boolean>{
+public final class CompareExpression implements Expression<Boolean>{
   private static final String[] opCodeMap = {
       "==",
       "!=",
@@ -19,9 +19,22 @@ public class CompareExpression implements Expression<Boolean>{
       ">=",
       "<="
   };
+  public static final int
+          Equals = 0,NotEquals = 1,
+          GreaterThan = 2,LessThan = 3,
+          GreaterEquals = 4,LessEquals = 5;
 
   public Expression<Object> a, b;
   public int opCode;
+
+  public CompareExpression(int opCode,Expression<Object> a, Expression<Object> b) {
+    this.a = a;
+    this.b = b;
+    this.opCode = opCode;
+  }
+
+  public CompareExpression() {
+  }
 
   @Override
   public Boolean calculate(IInterpreter interpreter){
@@ -71,6 +84,7 @@ public class CompareExpression implements Expression<Boolean>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     output.writeByte(opCode);
     a.serialize(output);
     b.serialize(output);
@@ -79,7 +93,9 @@ public class CompareExpression implements Expression<Boolean>{
   @Override
   public void deserialize(DataInput input) throws IOException {
     opCode=input.readByte();
+    a = SerializeUtils.readByID(input.readByte());
     a.deserialize(input);
+    b = SerializeUtils.readByID(input.readByte());
     b.deserialize(input);
   }
   @NotNull

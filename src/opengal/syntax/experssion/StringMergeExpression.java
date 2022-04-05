@@ -10,8 +10,16 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class StringMergeExpression implements Expression<String>{
+public final class StringMergeExpression implements Expression<String>{
   public Expression<Object> a, b;
+
+  public StringMergeExpression(Expression<Object> a, Expression<Object> b) {
+    this.a = a;
+    this.b = b;
+  }
+
+  public StringMergeExpression() {
+  }
 
   @Override
   public String calculate(IInterpreter interpreter){
@@ -26,13 +34,16 @@ public class StringMergeExpression implements Expression<String>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     a.serialize(output);
     b.serialize(output);
   }
 
   @Override
   public void deserialize(DataInput input) throws IOException {
+    a = SerializeUtils.readByID(input.readByte());
     a.deserialize(input);
+    b = SerializeUtils.readByID(input.readByte());
     b.deserialize(input);
   }
 

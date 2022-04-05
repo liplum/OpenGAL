@@ -49,7 +49,8 @@ public class SerializeUtils {
         throw new UnmappedObjectException("Can't map type code " + type);
     }
 
-    public static final int
+    public static final byte
+            NothingExpr = -1,
             AssignExpr = 0,
             BoolOpExpr = 1,
             IdentExpr = 2,
@@ -60,58 +61,73 @@ public class SerializeUtils {
             OpExpr = 7,
             ConstantExpr = 8;
     @SuppressWarnings("rawtypes")
-    public static final Map<Class<? extends Expression>, Integer> clz2Code;
+    public static final Map<Class<? extends Expression>, Byte> clz2Code;
     public static final Map<Byte, Supplier<Expression<?>>> code2Expr;
 
     static {
         clz2Code = new HashMap<>();
-        clz2Code.put(AssignExpression.class, 0);
-        clz2Code.put(BoolOperatorExpression.class, 1);
-        clz2Code.put(IdentExpression.class, 2);
-        clz2Code.put(CompareExpression.class, 3);
-        clz2Code.put(NorExpression.class, 4);
-        clz2Code.put(StringMergeExpression.class, 5);
-        clz2Code.put(ParExpression.class, 6);
-        clz2Code.put(OperatorExpression.class, 7);
-        clz2Code.put(ConstantExpression.class, 8);
+        clz2Code.put(AssignExpression.class, AssignExpr);
+        clz2Code.put(BoolOperatorExpression.class, BoolOpExpr);
+        clz2Code.put(IdentExpression.class, IdentExpr);
+        clz2Code.put(CompareExpression.class, CompareExpr);
+        clz2Code.put(NorExpression.class, NorExpr);
+        clz2Code.put(StringMergeExpression.class, StringMergeExpr);
+        clz2Code.put(ParExpression.class, ParExpr);
+        clz2Code.put(OperatorExpression.class, OpExpr);
+        clz2Code.put(ConstantExpression.class, ConstantExpr);
+        clz2Code.put(NothingExpression.class, NothingExpr);
 
         code2Expr = new HashMap<>();
-        code2Expr.put((byte) 0,AssignExpression::new);
-        code2Expr.put((byte) 1,BoolOperatorExpression::new);
-        code2Expr.put((byte) 2,IdentExpression::new);
-        code2Expr.put((byte) 3,CompareExpression::new);
-        code2Expr.put((byte) 4,NorExpression::new);
-        code2Expr.put((byte) 5,StringMergeExpression::new);
-        code2Expr.put((byte) 6,ParExpression::new);
-        code2Expr.put((byte) 7,OperatorExpression::new);
-        code2Expr.put((byte) 8,ConstantExpression::new);
+        code2Expr.put(AssignExpr, AssignExpression::new);
+        code2Expr.put(BoolOpExpr, BoolOperatorExpression::new);
+        code2Expr.put(IdentExpr, IdentExpression::new);
+        code2Expr.put(CompareExpr, CompareExpression::new);
+        code2Expr.put(NorExpr, NorExpression::new);
+        code2Expr.put(StringMergeExpr, StringMergeExpression::new);
+        code2Expr.put(ParExpr, ParExpression::new);
+        code2Expr.put(OpExpr, OperatorExpression::new);
+        code2Expr.put(ConstantExpr, ConstantExpression::new);
+        code2Expr.put(NothingExpr, NothingExpression::new);
     }
 
     /**
      * Serializes as a prefix expression.
      */
     public static void serializeExpr(DataOutput output, Expression<?> exprTree) throws IOException {
-        for (Expression<?> expr : preIt(exprTree)) {
-            Integer code = clz2Code.get(expr.getClass());
-            if(code == null){
-                throw new UnmappedObjectException(expr.getClass().getName());
-            }
-            output.writeByte(code);
-            expr.serialize(output);
-        }
+        exprTree.serialize(output);
     }
 
     /**
      * Deserializes a prefix expression.
      */
-    public static <T> Expression<T> serializeExpr(DataInput input) throws IOException {
-        byte code = input.readByte();
-        Supplier<Expression<?>> exprGen = code2Expr.get(code);
-        if(exprGen == null){
-            throw new UnmappedObjectException("Can't map expression code " + code);
+    @SuppressWarnings("unchecked")
+    public static <T> Expression<T> deserializeExpr(DataInput input) throws IOException {
+        Expression<?> rootExpr = SerializeUtils.readByID(input.readByte());
+        rootExpr.deserialize(input);
+        return (Expression<T>) rootExpr;
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    public static void writeThisID(DataOutput output, Class<? extends Expression> exprClz) throws IOException {
+        Byte code = clz2Code.get(exprClz);
+        if (code == null) {
+            throw new UnmappedObjectException(exprClz.getName());
         }
-        Expression<?> expr = exprGen.get();
-        return null;
+        output.writeByte(code);
+    }
+
+    public static void writeThisID(DataOutput output, Expression<?> expr) throws IOException {
+        writeThisID(output, expr.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Expression<?>> T readByID(byte ID) {
+        Supplier<Expression<?>> exprGen = code2Expr.get(ID);
+        if (exprGen == null) {
+            throw new UnmappedObjectException("Can't map expression code " + ID);
+        }
+        return (T) exprGen.get();
     }
 
     public static void preIt(LinkedList<Expression<?>> res, Expression<?> expr) {

@@ -2,15 +2,15 @@ package opengal.test;
 
 import opengal.core.Interpreter;
 import opengal.core.NodeTree;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import opengal.extension.Memory;
+import opengal.extension.Timing;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedList;
 
 @ExtendWith({Timing.class, Memory.class})
+@Disabled
 public class TestGalInterpreter {
     public NodeTree tree;
     public Interpreter in;
@@ -18,6 +18,7 @@ public class TestGalInterpreter {
     public boolean silent = true;
 
     @Test
+    @Tag("fast")
     public void test() {
         in.start();
         while (!in.isEnd()) {
@@ -26,9 +27,9 @@ public class TestGalInterpreter {
     }
 
     @Test
-    @Disabled
+    @Tag("slow")
     public void benchmark() {
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             in.start();
             while (!in.isEnd()) {
                 in.execute();

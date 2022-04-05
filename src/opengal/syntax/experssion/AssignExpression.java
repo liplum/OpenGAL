@@ -10,37 +10,48 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class AssignExpression<T> implements Expression<T>{
-  public Expression<T> exp;
-  public IdentExpression<T> ident;
+public final class AssignExpression<T> implements Expression<T> {
+    public Expression<T> exp;
+    public IdentExpression<T> ident;
 
-  @Override
-  public T calculate(IInterpreter interpreter){
-    T result = exp.calculate(interpreter);
-    interpreter.set(ident.key, result);
-    return result;
-  }
+    public AssignExpression() {
+    }
 
-  @Override
-  public String toString(){
-    return ident + " = " + exp;
-  }
+    public AssignExpression(IdentExpression<T> left,Expression<T> right) {
+        this.exp = right;
+        this.ident = left;
+    }
 
-  @Override
-  public void serialize(DataOutput output) throws IOException {
-    ident.serialize(output);
-    exp.serialize(output);
-  }
+    @Override
+    public T calculate(IInterpreter interpreter) {
+        T result = exp.calculate(interpreter);
+        interpreter.set(ident.key, result);
+        return result;
+    }
 
-  @Override
-  public void deserialize(DataInput input) throws IOException {
-    ident.deserialize(input);
-    exp.deserialize(input);
-  }
+    @Override
+    public String toString() {
+        return ident + " = " + exp;
+    }
 
-  @NotNull
-  @Override
-  public Iterator<Expression<?>> iterator() {
-    return SerializeUtils.varargsIt(exp,ident);
-  }
+    @Override
+    public void serialize(DataOutput output) throws IOException {
+        SerializeUtils.writeThisID(output, this);
+        ident.serialize(output);
+        exp.serialize(output);
+    }
+
+    @Override
+    public void deserialize(DataInput input) throws IOException {
+        ident = SerializeUtils.readByID(input.readByte());
+        ident.deserialize(input);
+        exp = SerializeUtils.readByID(input.readByte());
+        exp.deserialize(input);
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Expression<?>> iterator() {
+        return SerializeUtils.varargsIt(exp, ident);
+    }
 }

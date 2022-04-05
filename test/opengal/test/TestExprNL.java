@@ -1,26 +1,49 @@
 package opengal.test;
 
+import opengal.extension.Memory;
+import opengal.extension.Timing;
 import opengal.nl.SerializeUtils;
 import opengal.syntax.Expression;
 import opengal.syntax.ExpressionParser;
-import org.junit.jupiter.api.Test;
+import opengal.utils.Lists;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.*;
-import java.util.List;
 
+@ExtendWith({Timing.class, Memory.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestExprNL {
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
-    Expression<?> exprA = new ExpressionParser(List.of(
+    public static Expression<?> exprA = new ExpressionParser(Lists.of(
             "@au", "=", "(", "@c", "*", "(", "$u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     )).parse();
     //5+6*(7-2)
-    Expression<?> exprB = new ExpressionParser(List.of(
-            "5","+","6","*","(","7","-","2",")"
+    public static Expression<?> exprB = new ExpressionParser(Lists.of(
+            "5", "+", "6", "*", "(", "7", "-", "2", ")"
     )).parse();
+    public static Expression<?> original = exprA;
+    public static byte[] bytes;
+
     @Test
+    @Order(0)
+    @Tag("fast")
     public void testExprSerialize() throws IOException {
-        OutputStream os = new ByteArrayOutputStream();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(os);
-        SerializeUtils.serializeExpr(dos,exprB);
+        SerializeUtils.serializeExpr(dos, original);
+        dos.flush();
+        bytes = os.toByteArray();
+    }
+
+    @Test
+    @Order(1)
+    @Tag("fast")
+    public void testExprDeserialize() throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+        DataInputStream dis = new DataInputStream(is);
+        Expression<?> expr = SerializeUtils.deserializeExpr(dis);
+        System.out.println("Original:" + original);
+        System.out.println("Restored:" + expr);
     }
 }

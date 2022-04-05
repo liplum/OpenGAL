@@ -1,4 +1,4 @@
-package opengal.test;
+package opengal.extension;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.logging.Logger;
 
+@SuppressWarnings("RedundantThrows")
 public class Memory implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
     private static final Logger logger = Logger.getLogger(Memory.class.getName());
     private static final String START_FREE = "start free";

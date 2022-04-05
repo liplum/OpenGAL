@@ -2,9 +2,11 @@ package opengal.test;
 
 import opengal.core.Interpreter;
 import opengal.core.NodeTree;
+import opengal.extension.Memory;
+import opengal.extension.Timing;
 import opengal.nl.NodeLang;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import opengal.utils.GenTestTree;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
@@ -12,32 +14,40 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
 
+@SuppressWarnings("CodeBlock2Expr")
 @ExtendWith({Timing.class, Memory.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestNodeLang {
     Random random = new Random();
     public boolean silent = false;
     public LinkedList<String> output = new LinkedList<>();
 
     @Test
+    @Order(0)
+    @Tag("fast")
     public void testSerialize() throws IOException {
         NodeTree tree = GenTestTree.genTree();
 
         NodeLang nl = NodeLang.Default;
         String temp = System.getenv("TEMP");
         File file = new File(temp + "/nl_serialized.node");
-        System.out.println(file.getName());
+        System.out.println(file.getAbsoluteFile());
         if (!file.exists()) {
-            file.createNewFile();
+            if (!file.createNewFile()) {
+                throw new RuntimeException("Can't create file " + file.getAbsoluteFile());
+            }
         }
         nl.serializeToFile(tree, file);
     }
 
     @Test
+    @Order(1)
+    @Tag("fast")
     public void testDeserialize() throws IOException {
         NodeLang nl = NodeLang.Default;
         String temp = System.getenv("TEMP");
         File file = new File(temp + "/nl_serialized.node");
-        System.out.println(file.getName());
+        System.out.println(file.getAbsoluteFile());
         NodeTree tree = nl.deserializeFromFile(file);
 
         Interpreter in = new Interpreter();
@@ -67,6 +77,7 @@ public class TestNodeLang {
             in.execute();
         }
     }
+
     @AfterEach
     public void printOutput() {
         if (!silent) {

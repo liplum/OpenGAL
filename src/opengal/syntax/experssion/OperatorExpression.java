@@ -10,7 +10,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class OperatorExpression implements Expression<Integer>{
+public final class OperatorExpression implements Expression<Integer>{
   private static final String[] opCodeMap = {
       "+",
       "-",
@@ -21,6 +21,20 @@ public class OperatorExpression implements Expression<Integer>{
 
   public Expression<Integer> a, b;
   public int opCode;
+
+  public OperatorExpression() {
+  }
+
+  public static final int
+          Plus = 0,Minus = 1,
+          Multiple = 2, Divide = 3,
+          Modulus = 4;
+
+  public OperatorExpression( int opCode,Expression<Integer> a, Expression<Integer> b) {
+    this.a = a;
+    this.b = b;
+    this.opCode = opCode;
+  }
 
   @Override
   public Integer calculate(IInterpreter interpreter){
@@ -46,6 +60,7 @@ public class OperatorExpression implements Expression<Integer>{
 
   @Override
   public void serialize(DataOutput output) throws IOException {
+    SerializeUtils.writeThisID(output,this);
     output.writeByte(opCode);
     a.serialize(output);
     b.serialize(output);
@@ -53,7 +68,9 @@ public class OperatorExpression implements Expression<Integer>{
   @Override
   public void deserialize(DataInput input) throws IOException {
     opCode = input.readByte();
+    a =SerializeUtils.readByID(input.readByte());
     a.deserialize(input);
+    b = SerializeUtils.readByID(input.readByte());
     b.deserialize(input);
   }
   @NotNull
