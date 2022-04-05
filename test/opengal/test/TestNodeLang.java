@@ -9,7 +9,9 @@ import opengal.utils.GenTestTree;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Random;
@@ -18,9 +20,10 @@ import java.util.Random;
 @ExtendWith({Timing.class, Memory.class})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestNodeLang {
-    Random random = new Random();
-    public boolean silent = false;
-    public LinkedList<String> output = new LinkedList<>();
+    static Random random = new Random();
+    static boolean silent = false;
+    static LinkedList<String> output = new LinkedList<>();
+    static byte[] file;
 
     @Test
     @Order(0)
@@ -29,15 +32,10 @@ public class TestNodeLang {
         NodeTree tree = GenTestTree.genTree();
 
         NodeLang nl = NodeLang.Default;
-        String temp = System.getenv("TEMP");
-        File file = new File(temp + "/nl_serialized.node");
-        System.out.println(file.getAbsoluteFile());
-        if (!file.exists()) {
-            if (!file.createNewFile()) {
-                throw new RuntimeException("Can't create file " + file.getAbsoluteFile());
-            }
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            nl.serializeTo(tree, os);
+            file = os.toByteArray();
         }
-        nl.serializeToFile(tree, file);
     }
 
     @Test
@@ -45,11 +43,12 @@ public class TestNodeLang {
     @Tag("fast")
     public void testDeserialize() throws IOException {
         NodeLang nl = NodeLang.Default;
-        String temp = System.getenv("TEMP");
-        File file = new File(temp + "/nl_serialized.node");
-        System.out.println(file.getAbsoluteFile());
-        NodeTree tree = nl.deserializeFromFile(file);
-
+        NodeTree tree;
+        try (
+                ByteArrayInputStream is = new ByteArrayInputStream(file)
+        ) {
+            tree = nl.deserializeFrom(is);
+        }
         Interpreter in = new Interpreter();
         in.addAction("output", args -> {
             if (!silent) {

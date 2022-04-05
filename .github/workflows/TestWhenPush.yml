@@ -1,4 +1,4 @@
-name: Build Push Changes
+name: Push Changes Testing
 on: push
 
 jobs:
@@ -17,12 +17,7 @@ jobs:
       - name: Get short commit hash
         run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Build OpenGAL
+      - name: Test OpenGAL
         run: |
           chmod +x gradlew
           ./gradlew test
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: OpenGAL
-          path: build/libs/*.jar

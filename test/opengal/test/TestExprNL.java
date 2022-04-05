@@ -29,21 +29,27 @@ public class TestExprNL {
     @Order(0)
     @Tag("fast")
     public void testExprSerialize() throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(os);
-        SerializeUtils.serializeExpr(dos, original);
-        dos.flush();
-        bytes = os.toByteArray();
+        try (
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                DataOutputStream dos = new DataOutputStream(os)
+        ) {
+            SerializeUtils.serializeExpr(dos, original);
+            dos.flush();
+            bytes = os.toByteArray();
+        }
     }
 
     @Test
     @Order(1)
     @Tag("fast")
     public void testExprDeserialize() throws IOException {
-        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-        DataInputStream dis = new DataInputStream(is);
-        Expression<?> expr = SerializeUtils.deserializeExpr(dis);
-        System.out.println("Original:" + original);
-        System.out.println("Restored:" + expr);
+        try (
+                ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                DataInputStream dis = new DataInputStream(is)
+        ) {
+            Expression<?> expr = SerializeUtils.deserializeExpr(dis);
+            System.out.println("Original:" + original);
+            System.out.println("Restored:" + expr);
+        }
     }
 }
