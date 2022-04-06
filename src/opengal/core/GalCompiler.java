@@ -6,14 +6,11 @@ import opengal.nl.NodeLang;
 import opengal.syntax.IAnalyzer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 
-public class Compiler {
+public class GalCompiler {
     public IAnalyzer analyzer;
-    public NodeLang nodeLang;
+    public NodeLang nodeLang = NodeLang.Default;
 
     @NotNull
     public NodeTree compile(@NotNull File file) {
@@ -46,5 +43,14 @@ public class Compiler {
             throw new CompileNodeLangException(source, e);
         }
         return byteOutput.toByteArray();
+    }
+
+    public void compileNodeLang(@NotNull String source, OutputStream output) {
+        NodeTree tree = compile(source);
+        try {
+            nodeLang.serializeTo(tree, output);
+        } catch (Exception e) {
+            throw new CompileNodeLangException(source, e);
+        }
     }
 }

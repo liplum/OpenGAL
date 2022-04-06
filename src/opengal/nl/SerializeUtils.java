@@ -87,7 +87,7 @@ public class SerializeUtils {
         code2Expr.put(ParExpr, ParExpression::new);
         code2Expr.put(OpExpr, OperatorExpression::new);
         code2Expr.put(ConstantExpr, ConstantExpression::new);
-        code2Expr.put(NothingExpr, NothingExpression::new);
+        code2Expr.put(NothingExpr, () -> NothingExpression.X);
     }
 
     /**

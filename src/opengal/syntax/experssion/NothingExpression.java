@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 public class NothingExpression implements Expression<Object> {
+    public static final NothingExpression X = new NothingExpression();
     @Override
     public Object calculate(IInterpreter interpreter) {
         return OpenGAL.Nothing;

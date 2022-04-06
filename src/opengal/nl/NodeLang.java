@@ -25,20 +25,22 @@ public class NodeLang implements INodeLang {
             BlockEnd = 6,
             BlockEntry = 7,
             Jump = 8,
-            Calcu = 9;
+            Calcu = 9,
+            Yield = 10;
 
     static {
         StandardID2Node = new HashMap<>();
         StandardID2Node.put(Action, ActionNode::new);
         StandardID2Node.put(Condition, ConditionNode::new);
         StandardID2Node.put(Bind, BindNode::new);
-        StandardID2Node.put(Unbind, UnbindNode::new);
-        StandardID2Node.put(Return, ReturnNode::new);
-        StandardID2Node.put(Stop, StopNode::new);
-        StandardID2Node.put(BlockEnd, BlockEndNode::new);
+        StandardID2Node.put(Unbind, () -> UnbindNode.X);
+        StandardID2Node.put(Return, () -> ReturnNode.X);
+        StandardID2Node.put(Stop, () -> StopNode.X);
+        StandardID2Node.put(BlockEnd, () -> BlockEndNode.X);
         StandardID2Node.put(BlockEntry, BlockEntryNode::new);
         StandardID2Node.put(Jump, JumpNode::new);
         StandardID2Node.put(Calcu, CalcuNode::new);
+        StandardID2Node.put(Yield, YieldNode::new);
 
         StandardNode2ID = new HashMap<>();
         StandardNode2ID.put(ActionNode.class, Action);
@@ -51,6 +53,7 @@ public class NodeLang implements INodeLang {
         StandardNode2ID.put(BlockEntryNode.class, BlockEntry);
         StandardNode2ID.put(JumpNode.class, Jump);
         StandardNode2ID.put(CalcuNode.class, Calcu);
+        StandardNode2ID.put(YieldNode.class, Yield);
     }
 
     public static final NodeLang Default = new NodeLang(
