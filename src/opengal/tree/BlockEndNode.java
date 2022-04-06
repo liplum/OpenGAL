@@ -25,6 +25,6 @@ public class BlockEndNode implements Node {
 
     @Override
     public String toString() {
-        return ":end";
+        return ":block_end";
     }
 }
