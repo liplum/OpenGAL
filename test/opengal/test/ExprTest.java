@@ -18,7 +18,7 @@ public class ExprTest {
     Expression<?> expr;
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
     List<String> tokens = Lists.of(
-            "@au", "=", "(", "@c", "*", "(", "$u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
+            "@au", "=", "(", "@c", "*", "(", "$ u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
 
     @Test
@@ -28,6 +28,7 @@ public class ExprTest {
         ExpressionParser parser = new ExpressionParser(tokens);
         expr = parser.parse();
         System.out.println(expr);
+        System.out.flush();
     }
 
     @Test
