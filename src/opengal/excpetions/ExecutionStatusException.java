@@ -1,6 +1,6 @@
 package opengal.excpetions;
 
-public class ExecutionStatusException extends RuntimeException{
+public class ExecutionStatusException extends RuntimeException {
     public ExecutionStatusException() {
     }
 

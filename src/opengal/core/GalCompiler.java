@@ -3,7 +3,6 @@ package opengal.core;
 import opengal.excpetions.CompileNodeException;
 import opengal.excpetions.CompileNodeLangException;
 import opengal.nl.NodeLang;
-import opengal.syntax.IAnalyzer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;

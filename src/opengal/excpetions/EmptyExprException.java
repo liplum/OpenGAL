@@ -1,6 +1,6 @@
 package opengal.excpetions;
 
-public class EmptyExprException extends RuntimeException{
+public class EmptyExprException extends RuntimeException {
     public EmptyExprException() {
     }
 

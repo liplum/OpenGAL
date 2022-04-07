@@ -2,10 +2,11 @@ package opengal.core;
 
 import opengal.api.IAction;
 import opengal.api.Listener;
+import opengal.excpetions.NoSuchValueException;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import opengal.excpetions.NoSuchValueException;
+
 public interface IInterpreter {
     void execute();
 
@@ -70,11 +71,12 @@ public interface IInterpreter {
 
     /**
      * Gets the existed value
+     *
      * @param name the key
-     * @param <T> which type you want (NOTE: not guarantee it's)
-     * @exception ClassCastException raises if the value doesn't match the type
-     * @exception NoSuchValueException raises if the value doesn't exist
+     * @param <T>  which type you want (NOTE: not guarantee it's)
      * @return the value
+     * @throws ClassCastException   raises if the value doesn't match the type
+     * @throws NoSuchValueException raises if the value doesn't exist
      */
     @NotNull <T> T get(@NotNull String name);
 

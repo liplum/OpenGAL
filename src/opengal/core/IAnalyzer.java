@@ -1,6 +1,5 @@
-package opengal.syntax;
+package opengal.core;
 
-import opengal.core.NodeTree;
 import org.jetbrains.annotations.NotNull;
 
 public interface IAnalyzer {

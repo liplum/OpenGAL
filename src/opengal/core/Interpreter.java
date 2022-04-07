@@ -10,10 +10,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class Interpreter implements IInterpreter {
-    private NodeTree tree;
-    private int index;
     @NotNull
     private final Stack<Integer> calls = new Stack<>();
+    @NotNull
+    private final HashMap<String, IAction> name2Action = new HashMap<>();
+    @NotNull
+    private final HashMap<String, Object> fields = new HashMap<>();
+    @NotNull
+    private final HashSet<String> invariants = new HashSet<>();
+    private NodeTree tree;
+    private int index;
     private Node curNode;
     @Nullable
     private Listener endListener;
@@ -25,12 +31,6 @@ public class Interpreter implements IInterpreter {
     private ArrayList<Listener> afterExecutes;
     @Nullable
     private ArrayList<Listener> onBounds;
-    @NotNull
-    private final HashMap<String, IAction> name2Action = new HashMap<>();
-    @NotNull
-    private final HashMap<String, Object> fields = new HashMap<>();
-    @NotNull
-    private final HashSet<String> invariants = new HashSet<>();
     @Nullable
     private Object curBound;
     private boolean isEnd = false;

@@ -1,4 +1,4 @@
-package opengal.syntax;
+package opengal.experssion;
 
 import opengal.excpetions.EmptyExprException;
 import opengal.excpetions.ExprTokenSplitException;
@@ -6,32 +6,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static opengal.syntax.ExprUtils.TokenState.*;
-import static opengal.syntax.ExprUtils.TokenType.*;
+import static opengal.experssion.ExprUtils.TokenState.*;
+import static opengal.experssion.ExprUtils.TokenType.*;
 
 public class ExprUtils {
-    public enum TokenState {
-        Digits, Operator, Reference, Chars, JustConsume
-    }
-
-    public enum TokenType {
-        Whitespace, Digit, OperatorPart, Parenthesis, ReferenceSymbol, Else
-    }
-
     private static final HashSet<Character> OperatorIndicators = new HashSet<>(Arrays.asList(
             '+', '-', '*', '/', '%', '=', '!', '>', '<', '&', '|', '.'
     ));
-
     private static final HashSet<String> Operators = new HashSet<>(Arrays.asList(
             "+", "-", "*", "/", "%", "=", "==", "!", ">", "<", "!=", ">=", "<=", "&&", "||", ".."
     ));
-
     private static final int MaxOpLen = 2;
-
     private static final char LeftPar = '(';
     private static final char RightPar = ')';
     private static final char ReferenceIndicator = '@';
-
     /**
      * Only Allows the ASCII quote.
      */
@@ -45,7 +33,7 @@ public class ExprUtils {
      * @return the tokens
      */
     @NotNull
-    public static ArrayList<String> splitTokens(@NotNull String expr) {
+    public static Collection<String> splitTokens(@NotNull String expr) {
         expr = expr.trim();
         // So the first char mustn't be a whitespace
         if (expr.length() == 0) throw new EmptyExprException();
@@ -186,5 +174,13 @@ public class ExprUtils {
 
     private static boolean checkOperator(String op) {
         return Operators.contains(op);
+    }
+
+    public enum TokenState {
+        Digits, Operator, Reference, Chars, JustConsume
+    }
+
+    public enum TokenType {
+        Whitespace, Digit, OperatorPart, Parenthesis, ReferenceSymbol, Else
     }
 }

@@ -1,8 +1,7 @@
 package opengal.nl;
 
 import opengal.excpetions.UnmappedObjectException;
-import opengal.syntax.Expression;
-import opengal.syntax.experssion.*;
+import opengal.experssion.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInput;
@@ -12,10 +11,50 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class SerializeUtils {
-    public static final int NothingID = -1;
-    public static final int StringID = 0;
-    public static final int BooleanID = 1;
-    public static final int IntID = 2;
+    private static final int NothingID = -1;
+    private static final int StringID = 0;
+    private static final int BooleanID = 1;
+    private static final int IntID = 2;
+    private static final byte
+            NothingExpr = -1,
+            AssignExpr = 0,
+            BoolOpExpr = 1,
+            IdentExpr = 2,
+            CompareExpr = 3,
+            NorExpr = 4,
+            StringMergeExpr = 5,
+            ParExpr = 6,
+            OpExpr = 7,
+            ConstantExpr = 8;
+    @SuppressWarnings("rawtypes")
+    private static final Map<Class<? extends Expression>, Byte> clz2Code;
+    private static final Map<Byte, Supplier<Expression<?>>> code2Expr;
+
+    static {
+        clz2Code = new HashMap<>();
+        clz2Code.put(AssignExpression.class, AssignExpr);
+        clz2Code.put(BoolOperatorExpression.class, BoolOpExpr);
+        clz2Code.put(IdentExpression.class, IdentExpr);
+        clz2Code.put(CompareExpression.class, CompareExpr);
+        clz2Code.put(NorExpression.class, NorExpr);
+        clz2Code.put(StringMergeExpression.class, StringMergeExpr);
+        clz2Code.put(ParExpression.class, ParExpr);
+        clz2Code.put(OperatorExpression.class, OpExpr);
+        clz2Code.put(ConstantExpression.class, ConstantExpr);
+        clz2Code.put(NothingExpression.class, NothingExpr);
+
+        code2Expr = new HashMap<>();
+        code2Expr.put(AssignExpr, AssignExpression::new);
+        code2Expr.put(BoolOpExpr, BoolOperatorExpression::new);
+        code2Expr.put(IdentExpr, IdentExpression::new);
+        code2Expr.put(CompareExpr, CompareExpression::new);
+        code2Expr.put(NorExpr, NorExpression::new);
+        code2Expr.put(StringMergeExpr, StringMergeExpression::new);
+        code2Expr.put(ParExpr, ParExpression::new);
+        code2Expr.put(OpExpr, OperatorExpression::new);
+        code2Expr.put(ConstantExpr, ConstantExpression::new);
+        code2Expr.put(NothingExpr, () -> NothingExpression.X);
+    }
 
     public static void serializeObj(DataOutput output, @Nullable Object obj) throws IOException {
         if (obj == null) {
@@ -47,47 +86,6 @@ public class SerializeUtils {
                 return input.readBoolean();
         }
         throw new UnmappedObjectException("Can't map type code " + type);
-    }
-
-    public static final byte
-            NothingExpr = -1,
-            AssignExpr = 0,
-            BoolOpExpr = 1,
-            IdentExpr = 2,
-            CompareExpr = 3,
-            NorExpr = 4,
-            StringMergeExpr = 5,
-            ParExpr = 6,
-            OpExpr = 7,
-            ConstantExpr = 8;
-    @SuppressWarnings("rawtypes")
-    public static final Map<Class<? extends Expression>, Byte> clz2Code;
-    public static final Map<Byte, Supplier<Expression<?>>> code2Expr;
-
-    static {
-        clz2Code = new HashMap<>();
-        clz2Code.put(AssignExpression.class, AssignExpr);
-        clz2Code.put(BoolOperatorExpression.class, BoolOpExpr);
-        clz2Code.put(IdentExpression.class, IdentExpr);
-        clz2Code.put(CompareExpression.class, CompareExpr);
-        clz2Code.put(NorExpression.class, NorExpr);
-        clz2Code.put(StringMergeExpression.class, StringMergeExpr);
-        clz2Code.put(ParExpression.class, ParExpr);
-        clz2Code.put(OperatorExpression.class, OpExpr);
-        clz2Code.put(ConstantExpression.class, ConstantExpr);
-        clz2Code.put(NothingExpression.class, NothingExpr);
-
-        code2Expr = new HashMap<>();
-        code2Expr.put(AssignExpr, AssignExpression::new);
-        code2Expr.put(BoolOpExpr, BoolOperatorExpression::new);
-        code2Expr.put(IdentExpr, IdentExpression::new);
-        code2Expr.put(CompareExpr, CompareExpression::new);
-        code2Expr.put(NorExpr, NorExpression::new);
-        code2Expr.put(StringMergeExpr, StringMergeExpression::new);
-        code2Expr.put(ParExpr, ParExpression::new);
-        code2Expr.put(OpExpr, OperatorExpression::new);
-        code2Expr.put(ConstantExpr, ConstantExpression::new);
-        code2Expr.put(NothingExpr, () -> NothingExpression.X);
     }
 
     /**

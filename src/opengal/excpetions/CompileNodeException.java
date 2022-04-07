@@ -1,6 +1,6 @@
 package opengal.excpetions;
 
-public class CompileNodeException extends RuntimeException{
+public class CompileNodeException extends RuntimeException {
     public CompileNodeException() {
     }
 

@@ -8,9 +8,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ActionNode implements Node {
-    public String actionName;
+public final class ActionNode implements Node {
     public static Object[] emptyArgs = new Object[0];
+    public String actionName;
     public Object[] args = emptyArgs;
 
     @Override
@@ -38,6 +38,7 @@ public class ActionNode implements Node {
     }
 
     @Override
+    @NotNull
     public String toString() {
         if (args.length > 0) {
             return ":action " + actionName + argsToString();
@@ -60,10 +61,10 @@ public class ActionNode implements Node {
         for (int i = 0; ; i++) {
             Object arg = args[i];
             boolean isString = arg instanceof String;
-            if(isString)
+            if (isString)
                 b.append('\"');
             b.append(arg);
-            if(isString)
+            if (isString)
                 b.append('\"');
             if (i == iMax)
                 return b.append(')').toString();

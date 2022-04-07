@@ -1,10 +1,10 @@
 package opengal.test;
 
+import opengal.experssion.Expression;
+import opengal.experssion.ExpressionParser;
 import opengal.extension.Memory;
 import opengal.extension.Timing;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
-import opengal.syntax.ExpressionParser;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 

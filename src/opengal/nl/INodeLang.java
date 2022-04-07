@@ -1,12 +1,13 @@
 package opengal.nl;
 
 import opengal.core.NodeTree;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
 public interface INodeLang {
 
-    void serialize(NodeTree tree, DataOutput output);
+    void serialize(@NotNull NodeTree tree, @NotNull DataOutput output);
 
     default void serializeTo(NodeTree tree, OutputStream output) throws IOException {
         try (DataOutputStream stream = new DataOutputStream(output)) {
@@ -14,21 +15,23 @@ public interface INodeLang {
         }
     }
 
-    default void serializeToFile(NodeTree tree, File file) throws IOException {
+    default void serializeToFile(@NotNull NodeTree tree, @NotNull File file) throws IOException {
         try (DataOutputStream stream = new DataOutputStream(new FileOutputStream(file))) {
             serialize(tree, stream);
         }
     }
 
-    NodeTree deserialize(DataInput input);
+    @NotNull
+    NodeTree deserialize(@NotNull DataInput input);
 
-    default NodeTree deserializeFrom(InputStream input) throws IOException {
+    default NodeTree deserializeFrom(@NotNull InputStream input) throws IOException {
         try (DataInputStream stream = new DataInputStream(input)) {
             return deserialize(stream);
         }
     }
 
-    default NodeTree deserializeFromFile(File file) throws IOException {
+    @NotNull
+    default NodeTree deserializeFromFile(@NotNull File file) throws IOException {
         try (DataInputStream stream = new DataInputStream(new FileInputStream(file))) {
             return deserialize(stream);
         }

@@ -1,6 +1,6 @@
 package opengal.excpetions;
 
-public class ExprTokenSplitException extends RuntimeException{
+public class ExprTokenSplitException extends RuntimeException {
     public ExprTokenSplitException() {
     }
 

@@ -1,7 +1,7 @@
 package opengal.utils;
 
 import opengal.core.NodeTree;
-import opengal.syntax.experssion.IdentExpression;
+import opengal.experssion.IdentExpression;
 import opengal.tree.*;
 
 import java.util.ArrayList;

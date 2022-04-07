@@ -1,8 +1,7 @@
-package opengal.syntax.experssion;
+package opengal.experssion;
 
 import opengal.core.IInterpreter;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -17,32 +16,32 @@ public final class AssignExpression<T> implements Expression<T> {
     public AssignExpression() {
     }
 
-    public AssignExpression(IdentExpression<T> left,Expression<T> right) {
+    public AssignExpression(IdentExpression<T> left, Expression<T> right) {
         this.exp = right;
         this.ident = left;
     }
 
     @Override
-    public T calculate(IInterpreter interpreter) {
+    public @NotNull T calculate(IInterpreter interpreter) {
         T result = exp.calculate(interpreter);
         interpreter.set(ident.key, result);
         return result;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return ident + " = " + exp;
     }
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
+    public void serialize(@NotNull DataOutput output) throws IOException {
         SerializeUtils.writeThisID(output, this);
         ident.serialize(output);
         exp.serialize(output);
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
         ident = SerializeUtils.readByID(input.readByte());
         ident.deserialize(input);
         exp = SerializeUtils.readByID(input.readByte());

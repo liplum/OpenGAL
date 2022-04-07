@@ -13,6 +13,13 @@ public class Memory implements BeforeTestExecutionCallback, AfterTestExecutionCa
     private static final Logger logger = Logger.getLogger(Memory.class.getName());
     private static final String START_FREE = "start free";
 
+    public static String readableBytesSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+    }
+
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         System.gc();
@@ -37,15 +44,7 @@ public class Memory implements BeforeTestExecutionCallback, AfterTestExecutionCa
         System.gc();
     }
 
-
     private ExtensionContext.Store getStore(ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestMethod()));
-    }
-
-    public static String readableBytesSize(long size) {
-        if (size <= 0) return "0";
-        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
-        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }

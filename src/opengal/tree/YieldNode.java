@@ -2,14 +2,15 @@ package opengal.tree;
 
 import opengal.core.IInterpreter;
 import opengal.core.OpenGAL;
+import opengal.experssion.Expression;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class YieldNode implements Node {
+public final class YieldNode implements Node {
     public Expression<?> expr = OpenGAL.NothingExpr;
 
     @Override
@@ -36,6 +37,7 @@ public class YieldNode implements Node {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":yield " + expr;
     }

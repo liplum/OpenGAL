@@ -1,11 +1,12 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public class ReturnNode implements Node{
+public final class ReturnNode implements Node {
     public static final ReturnNode X = new ReturnNode();
 
     @Override
@@ -24,6 +25,7 @@ public class ReturnNode implements Node{
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":return";
     }

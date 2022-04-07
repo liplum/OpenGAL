@@ -4,17 +4,16 @@ import opengal.core.NodeTree;
 import opengal.excpetions.NoSuchNodeException;
 import opengal.excpetions.NodeLangException;
 import opengal.tree.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class NodeLang implements INodeLang {
-    public static final HashMap<Byte, Supplier<Node>> StandardID2Node;
-    public static final HashMap<Class<? extends Node>, Byte> StandardNode2ID;
-
     public static final byte
             Action = 0,
             Condition = 1,
@@ -27,6 +26,10 @@ public class NodeLang implements INodeLang {
             Jump = 8,
             Calcu = 9,
             Yield = 10;
+    @NotNull
+    private static final Map<Byte, Supplier<Node>> StandardID2Node;
+    @NotNull
+    private static final Map<Class<? extends Node>, Byte> StandardNode2ID;
 
     static {
         StandardID2Node = new HashMap<>();
@@ -56,22 +59,23 @@ public class NodeLang implements INodeLang {
         StandardNode2ID.put(YieldNode.class, Yield);
     }
 
+    @NotNull
     public static final NodeLang Default = new NodeLang(
             StandardID2Node, StandardNode2ID
     );
 
-    public HashMap<Byte, Supplier<Node>> id2Nodes;
-    public HashMap<Class<? extends Node>, Byte> node2ID;
+    public Map<Byte, Supplier<Node>> id2Nodes;
+    public Map<Class<? extends Node>, Byte> node2ID;
 
     public NodeLang(
-            HashMap<Byte, Supplier<Node>> id2Nodes,
-            HashMap<Class<? extends Node>, Byte> node2ID
+            Map<Byte, Supplier<Node>> id2Nodes,
+            Map<Class<? extends Node>, Byte> node2ID
     ) {
         this.id2Nodes = id2Nodes;
         this.node2ID = node2ID;
     }
 
-    public void serialize(NodeTree tree, DataOutput output) {
+    public void serialize(@NotNull NodeTree tree, @NotNull DataOutput output) {
         try {
             output.writeInt(tree.getSize());
             for (Node node : tree.getNodes()) {
@@ -88,7 +92,8 @@ public class NodeLang implements INodeLang {
         }
     }
 
-    public NodeTree deserialize(DataInput input) {
+    @NotNull
+    public NodeTree deserialize(@NotNull DataInput input) {
         try {
             int nodeLen = input.readInt();
             ArrayList<Node> nodes = new ArrayList<>(nodeLen);

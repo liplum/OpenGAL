@@ -1,9 +1,8 @@
-package opengal.syntax.experssion;
+package opengal.experssion;
 
 import opengal.core.IInterpreter;
 import opengal.core.OpenGAL;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -14,18 +13,19 @@ import java.util.Iterator;
 
 public class NothingExpression implements Expression<Object> {
     public static final NothingExpression X = new NothingExpression();
+
     @Override
-    public Object calculate(IInterpreter interpreter) {
+    public @NotNull Object calculate(IInterpreter interpreter) {
         return OpenGAL.Nothing;
     }
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
-        SerializeUtils.writeThisID(output,this);
+    public void serialize(@NotNull DataOutput output) throws IOException {
+        SerializeUtils.writeThisID(output, this);
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
 
     }
 
@@ -36,7 +36,7 @@ public class NothingExpression implements Expression<Object> {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Nothing";
     }
 }

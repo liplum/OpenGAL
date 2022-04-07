@@ -2,7 +2,7 @@ package opengal.excpetions;
 
 import opengal.core.NodeTree;
 
-public class NoSuchActionException extends RuntimeException{
+public class NoSuchActionException extends RuntimeException {
     public NoSuchActionException(String message) {
         super(message);
     }

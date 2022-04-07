@@ -1,13 +1,13 @@
 package opengal.extension;
 
-import java.lang.reflect.Method;
-import java.util.logging.Logger;
-
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+
+import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 @SuppressWarnings("RedundantThrows")
 public class Timing implements BeforeTestExecutionCallback, AfterTestExecutionCallback {

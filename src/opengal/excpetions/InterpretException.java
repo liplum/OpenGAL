@@ -1,6 +1,6 @@
 package opengal.excpetions;
 
-public class InterpretException extends RuntimeException{
+public class InterpretException extends RuntimeException {
     public InterpretException() {
     }
 

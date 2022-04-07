@@ -1,12 +1,13 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class BlockEntryNode implements Node {
+public final class BlockEntryNode implements Node {
     public int blockHead;
 
     @Override
@@ -26,6 +27,7 @@ public class BlockEntryNode implements Node {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":entry " + blockHead;
     }

@@ -5,7 +5,10 @@ import opengal.core.NodeTree;
 import opengal.extension.Memory;
 import opengal.extension.Timing;
 import opengal.utils.GenTestTree;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.LinkedList;

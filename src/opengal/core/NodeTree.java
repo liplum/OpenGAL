@@ -14,12 +14,12 @@ public class NodeTree {
     private final List<Node> nodes;
     @NotNull
     private final Set<String> inputs = new HashSet<>();
+    @NotNull
+    private final HashMap<String, Object> metas = new HashMap<>();
     @Nullable
     public String fileName;
     @NotNull
     public String nothingName = "Nothing";
-    @NotNull
-    private final HashMap<String, String> metas = new HashMap<>();
 
     public NodeTree(
             @NotNull List<Node> nodes
@@ -42,7 +42,7 @@ public class NodeTree {
     }
 
     @NotNull
-    public HashMap<String, String> getMetas() {
+    public HashMap<String, Object> getMetas() {
         return metas;
     }
 
@@ -51,7 +51,7 @@ public class NodeTree {
         return inputs;
     }
 
-    public void addInput(String input){
+    public void addInput(String input) {
         inputs.add(input);
     }
 }

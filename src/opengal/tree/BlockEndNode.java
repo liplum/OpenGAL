@@ -1,11 +1,12 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public class BlockEndNode implements Node {
+public final class BlockEndNode implements Node {
     public static final BlockEndNode X = new BlockEndNode();
 
     @Override
@@ -24,6 +25,7 @@ public class BlockEndNode implements Node {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":block_end";
     }

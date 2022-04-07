@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'open-gal'
+group 'opengal'
 version '0.2'
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]

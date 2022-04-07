@@ -1,11 +1,12 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 
-public class StopNode implements Node{
+public final class StopNode implements Node {
     public static final StopNode X = new StopNode();
 
     @Override
@@ -24,6 +25,7 @@ public class StopNode implements Node{
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":stop";
     }

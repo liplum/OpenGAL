@@ -1,14 +1,15 @@
 package opengal.tree;
 
 import opengal.core.IInterpreter;
+import opengal.experssion.Expression;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ConditionNode implements Node {
+public final class ConditionNode implements Node {
     public Expression<Boolean> condition;
     public int trueDestination;
     public int falseDestination;
@@ -37,6 +38,7 @@ public class ConditionNode implements Node {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return ":if " + condition + " then " + trueDestination + " else " + falseDestination;
     }

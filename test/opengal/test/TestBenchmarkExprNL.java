@@ -1,9 +1,9 @@
 package opengal.test;
 
+import opengal.experssion.Expression;
 import opengal.extension.Memory;
 import opengal.extension.Timing;
 import opengal.nl.SerializeUtils;
-import opengal.syntax.Expression;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -13,6 +13,7 @@ import java.io.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestBenchmarkExprNL {
     public static int benchmarkNumber = 1000;
+
     @Test
     @Order(0)
     @Tag("slow")
