@@ -4,20 +4,18 @@ import opengal.extension.Memory;
 import opengal.extension.Timing;
 import opengal.syntax.Expression;
 import opengal.syntax.ExpressionParser;
-import opengal.utils.Lists;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith({Timing.class, Memory.class})
 public class ExprTest {
     Expression<?> expr;
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
-    List<String> tokens = Lists.of(
+    List<String> tokens = Arrays.asList(
             "@au", "=", "(", "@c", "*", "(", "$ u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
 

@@ -15,4 +15,8 @@ public class InterpretException extends RuntimeException{
     public InterpretException(Throwable cause) {
         super(cause);
     }
+
+    public InterpretException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

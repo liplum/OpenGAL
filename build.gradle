@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'open-gal'
-version '0.1'
+version '0.2'
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
@@ -13,11 +13,18 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from sourceSets.main.allSource
+}
+
 test {
-    useJUnitPlatform{
+    useJUnitPlatform {
         includeTags 'fast'
         excludeTags 'slow'
     }

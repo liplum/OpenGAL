@@ -6,22 +6,12 @@ import opengal.nl.NodeLang;
 import opengal.syntax.IAnalyzer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 
 public class GalCompiler {
     public IAnalyzer analyzer;
     public NodeLang nodeLang = NodeLang.Default;
-
-    @NotNull
-    public NodeTree compile(@NotNull File file) {
-        FileReader reader;
-        try {
-            reader = new FileReader(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Can't load file" + file.getAbsolutePath());
-        }
-        return analyzer.analyze(reader);
-    }
 
     @NotNull
     public NodeTree compile(@NotNull String source) {
