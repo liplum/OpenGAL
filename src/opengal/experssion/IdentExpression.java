@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +21,8 @@ public final class IdentExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(IInterpreter interpreter) {
-        return interpreter.get(key);
+    public @NotNull T calculate(@NotNull IRuntime runtime) {
+        return runtime.get(key);
     }
 
     @Override

@@ -2,7 +2,7 @@ package opengal.core;
 
 import opengal.api.IAction;
 import opengal.api.Listener;
-import opengal.excpetions.*;
+import opengal.exceptions.*;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +30,12 @@ public class Interpreter implements IInterpreter {
     @Nullable
     private ArrayList<Listener> afterExecutes;
     @Nullable
-    private ArrayList<Listener> onBounds;
+    private Listener onBound;
     @Nullable
     private Object curBound;
-    private boolean isEnd = false;
+    private boolean isEnd = true;
     private boolean noNext = false;
-    private boolean isExecuting = true;
+    private boolean isBlocked = false;
 
     @Override
     public boolean isEnd() {
@@ -44,32 +44,29 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void execute() {
+        if(tree == null) throw new RuntimeException();
+        if (isBlocked) return;
+        if (index < 0 || index >= tree.getSize())
+            throw new InterpretException("Current index " + index + " is out of range [0," + tree.getSize() + "].");
+        curNode = tree.get(index);
+        if (beforeExecutes != null) {
+            for (Listener before : beforeExecutes)
+                before.on();
+        }
+        if (!noNext)
+            index++;
         try {
-            curNode = tree.get(index);
-            if (!isExecuting) return;
-            if (beforeExecutes != null) {
-                for (Listener before : beforeExecutes) {
-                    before.on();
-                }
-            }
-
             curNode.operate(this);
-            if (!noNext) {
-                index++;
-            }
-            noNext = false;
-
-            if (afterExecutes != null) {
-                for (Listener after : afterExecutes) {
-                    after.on();
-                }
-            }
-            if (isEnd && endListener != null) {
-                endListener.on();
-            }
         } catch (Exception e) {
             throw new InterpretException("Index at " + index + " " + curNode.toString(), e);
         }
+        noNext = false;
+        if (afterExecutes != null) {
+            for (Listener after : afterExecutes)
+                after.on();
+        }
+        if (isEnd && endListener != null)
+            endListener.on();
     }
 
     @Override
@@ -96,10 +93,7 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void onBound(@NotNull Listener listener) {
-        if (onBounds == null) {
-            onBounds = new ArrayList<>();
-        }
-        onBounds.add(listener);
+        onBound = listener;
     }
 
     @Override
@@ -137,22 +131,22 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
-    public void blockExecute() {
-        if (!isExecuting) {
+    public void blockExecution() {
+        if (isBlocked) {
             throw new ExecutionStatusException("Can't block from blocked.");
         }
-        isExecuting = false;
+        isBlocked = true;
         if (blockedListener != null) {
             blockedListener.on();
         }
     }
 
     @Override
-    public void continueExecute() {
-        if (isExecuting) {
+    public void resumeExecution() {
+        if (!isBlocked) {
             throw new ExecutionStatusException("Can't resume from non-blocked.");
         }
-        isExecuting = true;
+        isBlocked = false;
     }
 
     @Override
@@ -165,10 +159,8 @@ public class Interpreter implements IInterpreter {
         if (!keys.containsAll(inputs)) {
             throw new InputNotGivenException(tree);
         }
-        String nothingName = tree.nothingName;
-        fields.put(nothingName, OpenGAL.Nothing);
-        invariants.add(nothingName);
         this.index = 0;
+        this.isEnd = false;
         calls.clear();
         unbind();
     }
@@ -195,10 +187,8 @@ public class Interpreter implements IInterpreter {
             throw new NoSuchValueException(tree, name);
         }
         curBound = bound;
-        if (onBounds != null) {
-            for (Listener listener : onBounds) {
-                listener.on();
-            }
+        if (onBound != null) {
+            onBound.on();
         }
     }
 
@@ -208,10 +198,13 @@ public class Interpreter implements IInterpreter {
 
     public boolean getBool(@NotNull String name) {
         Object o = fields.get(name);
-        if (!(o instanceof Boolean)) {
-            throw new NoSuchValueException(tree, name);
+        if (o instanceof Boolean) {
+            return (boolean) o;
+        } else if (o instanceof Integer) {
+            return ((int) o) != 0;
+        } else {
+            return o != null && o != OpenGAL.Nothing;
         }
-        return (boolean) o;
     }
 
     public void doAction(@NotNull String actionName, @NotNull Object[] args) {
@@ -222,12 +215,12 @@ public class Interpreter implements IInterpreter {
         action.invoke(args);
     }
 
-    @NotNull
+    @Nullable
     public NodeTree getTree() {
         return tree;
     }
 
-    public void setTree(@NotNull NodeTree tree) {
+    public void setTree(@Nullable NodeTree tree) {
         this.tree = tree;
     }
 
@@ -241,10 +234,14 @@ public class Interpreter implements IInterpreter {
         return curBound;
     }
 
-
     @Override
     public void addAction(@NotNull String name, IAction action) {
         name2Action.put(name, action);
+    }
+
+    @Override
+    public void removeAction(@NotNull String name) {
+        name2Action.remove(name);
     }
 
     @Override
@@ -260,6 +257,11 @@ public class Interpreter implements IInterpreter {
         fields.put(name, value);
     }
 
+    @Override
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> @NotNull T get(@NotNull String name) {
@@ -271,18 +273,24 @@ public class Interpreter implements IInterpreter {
     }
 
     @Override
+    @NotNull
+    public Object getNullable(@NotNull String name) {
+        Object v = fields.get(name);
+        if (v == null) {
+            return OpenGAL.Nothing;
+        }
+        return v;
+    }
+
+    @Override
     public void reset() {
-        fields.clear();
-        calls.clear();
+        clearRuntimeStates();
         name2Action.clear();
-        invariants.clear();
         beforeExecutes = null;
         afterExecutes = null;
         endListener = null;
-        curBound = null;
-        curNode = null;
+        onBound = null;
         tree = null;
-        index = 0;
     }
 
     @Override
@@ -291,6 +299,8 @@ public class Interpreter implements IInterpreter {
         fields.clear();
         invariants.clear();
         index = 0;
+        isBlocked = false;
+        isEnd = true;
         curBound = null;
         curNode = null;
     }

@@ -1,4 +1,4 @@
-package opengal.excpetions;
+package opengal.exceptions;
 
 public class AnalysisException extends RuntimeException {
     public AnalysisException(String message) {

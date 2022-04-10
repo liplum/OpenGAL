@@ -1,6 +1,6 @@
 package opengal.tree;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -11,18 +11,18 @@ public final class JumpNode implements Node {
     public int destination;
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
+    public void serialize(@NotNull DataOutput output) throws IOException {
         output.writeInt(destination);
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
         destination = input.readInt();
     }
 
     @Override
-    public void operate(IInterpreter in) {
-        in.jumpTo(destination);
+    public void operate(@NotNull IRuntime runtime) {
+        runtime.jumpTo(destination);
     }
 
     @Override

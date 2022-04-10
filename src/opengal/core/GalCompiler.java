@@ -1,7 +1,7 @@
 package opengal.core;
 
-import opengal.excpetions.CompileNodeException;
-import opengal.excpetions.CompileNodeLangException;
+import opengal.exceptions.CompileNodeException;
+import opengal.exceptions.CompileNodeLangException;
 import opengal.nl.NodeLang;
 import org.jetbrains.annotations.NotNull;
 

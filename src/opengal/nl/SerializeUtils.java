@@ -1,6 +1,6 @@
 package opengal.nl;
 
-import opengal.excpetions.UnmappedObjectException;
+import opengal.exceptions.UnmappedObjectException;
 import opengal.experssion.*;
 import org.jetbrains.annotations.Nullable;
 

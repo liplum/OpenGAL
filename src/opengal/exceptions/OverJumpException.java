@@ -1,6 +1,6 @@
-package opengal.excpetions;
+package opengal.exceptions;
 
-public class OverJumpException extends RuntimeException {
+public class OverJumpException extends InterpretException {
     public OverJumpException() {
     }
 

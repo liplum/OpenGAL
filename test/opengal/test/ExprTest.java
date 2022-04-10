@@ -25,8 +25,7 @@ public class ExprTest {
         //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
         ExpressionParser parser = new ExpressionParser(tokens);
         expr = parser.parse();
-        System.out.println(expr);
-        System.out.flush();
+        assert expr.toString().equals("@au = (@c * ($ u + 43)) * 30 + 6 >= 74");
     }
 
     @Test

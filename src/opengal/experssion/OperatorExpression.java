@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,18 +34,18 @@ public final class OperatorExpression implements Expression<Integer> {
     }
 
     @Override
-    public @NotNull Integer calculate(IInterpreter interpreter) {
+    public @NotNull Integer calculate(@NotNull IRuntime runtime) {
         switch (opCode) {
             case 0:
-                return a.calculate(interpreter) + b.calculate(interpreter); // +
+                return a.calculate(runtime) + b.calculate(runtime); // +
             case 1:
-                return a.calculate(interpreter) - b.calculate(interpreter); // -
+                return a.calculate(runtime) - b.calculate(runtime); // -
             case 2:
-                return a.calculate(interpreter) * b.calculate(interpreter); // *
+                return a.calculate(runtime) * b.calculate(runtime); // *
             case 3:
-                return a.calculate(interpreter) / b.calculate(interpreter); // /
+                return a.calculate(runtime) / b.calculate(runtime); // /
             case 4:
-                return a.calculate(interpreter) % b.calculate(interpreter); // %
+                return a.calculate(runtime) % b.calculate(runtime); // %
             default:
                 throw new RuntimeException("unknow opcode: " + opCode);
         }

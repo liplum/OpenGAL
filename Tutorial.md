@@ -18,11 +18,11 @@ ___
 ___
 OpenGAL only allows 3 data types: integer, boolean and string.
 
-| Type    | usage                 |
-|---------|-----------------------|
-| integer | 1, 2, 3, 10           |
-| boolean | true, false           |
-| string  | abc, Apple, $T_H_I_S$ |
+| Type    | usage                          |
+|---------|--------------------------------|
+| integer | 1, 2, 3, 10                    |
+| boolean | true, false                    |
+| string  | abc, Apple, $T_H_I_S$, "1 2 3" |
 
 ### Expressions
 ___

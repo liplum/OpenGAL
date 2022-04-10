@@ -1,6 +1,6 @@
 package opengal.tree;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.experssion.Expression;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -15,26 +15,25 @@ public final class ConditionNode implements Node {
     public int falseDestination;
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
+    public void serialize(@NotNull DataOutput output) throws IOException {
         SerializeUtils.serializeExpr(output, condition);
         output.writeInt(trueDestination);
         output.writeInt(falseDestination);
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
         condition = SerializeUtils.deserializeExpr(input);
         trueDestination = input.readInt();
         falseDestination = input.readInt();
     }
 
     @Override
-    public void operate(IInterpreter in) {
-        if (condition.calculate(in)) {
-            in.jumpTo(trueDestination);
-        } else {
-            in.jumpTo(falseDestination);
-        }
+    public void operate(@NotNull IRuntime runtime) {
+        if (condition.calculate(runtime))
+            runtime.jumpTo(trueDestination);
+        else
+            runtime.jumpTo(falseDestination);
     }
 
     @Override

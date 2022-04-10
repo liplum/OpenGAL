@@ -1,6 +1,6 @@
 package opengal.tree;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -10,18 +10,18 @@ public final class BlockEndNode implements Node {
     public static final BlockEndNode X = new BlockEndNode();
 
     @Override
-    public void serialize(DataOutput output) {
+    public void serialize(@NotNull DataOutput output) {
 
     }
 
     @Override
-    public void deserialize(DataInput input) {
+    public void deserialize(@NotNull DataInput input) {
 
     }
 
     @Override
-    public void operate(IInterpreter in) {
-        in.popIndex();
+    public void operate(@NotNull IRuntime runtime) {
+        runtime.popIndex();
     }
 
     @Override

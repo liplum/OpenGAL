@@ -48,8 +48,7 @@ public class TestExprNL {
                 DataInputStream dis = new DataInputStream(is)
         ) {
             Expression<?> expr = SerializeUtils.deserializeExpr(dis);
-            System.out.println("Original:" + original);
-            System.out.println("Restored:" + expr);
+            assert expr.toString().equals("@au = (@c * ($u + 43)) * 30 + 6 >= 74");
         }
     }
 }

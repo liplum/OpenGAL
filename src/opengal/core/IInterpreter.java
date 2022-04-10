@@ -2,52 +2,111 @@ package opengal.core;
 
 import opengal.api.IAction;
 import opengal.api.Listener;
-import opengal.excpetions.NoSuchValueException;
+import opengal.exceptions.InterpretException;
 import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IInterpreter {
+public interface IInterpreter extends IRuntime {
+    /**
+     * Execute a single node.
+     *
+     * @throws InterpretException raises when the interpreter executes node inappropriately.
+     */
     void execute();
 
+    /**
+     * Add a listener which will be called when execution of current Node Tree finished.
+     *
+     * @param listener whether it supports single/multiple-listener based on the implementation.
+     */
     void onEnd(@NotNull Listener listener);
 
+    /**
+     * Add a listener which will be called just before executing any node.
+     * <p>
+     * {@linkplain IInterpreter#getCurIndex() index} and {@linkplain IInterpreter#getCurNode() current node}
+     * have been already set correctly and prepared to execute a node.
+     * </p>
+     *
+     * @param listener whether it supports single/multiple-listener based on the implementation.
+     */
     void beforeExecute(@NotNull Listener listener);
 
+    /**
+     * Add a listener which will be called just after executing any node.
+     * <p>
+     * {@linkplain IInterpreter#getCurIndex() index} has been already changed
+     * and but hasn't check whether the Node Tree was ended yet.
+     * </p>
+     *
+     * @param listener whether it supports single/multiple-listener based on the implementation.
+     */
     void afterExecute(@NotNull Listener listener);
 
+    /**
+     * Set the listener which will be called when execution was blocked.
+     *
+     * @param listener whether it supports single/multiple-listener based on the implementation.
+     */
     void onBlocked(@NotNull Listener listener);
 
+    /**
+     * Set the listener which will be called when a new object was bound.
+     *
+     * @param listener whether it supports single/multiple-listener based on the implementation.
+     */
     void onBound(@NotNull Listener listener);
 
+    /**
+     * Set a constant, invariable, which cannot be changed during execution.
+     *
+     * @param name  the constant key for access
+     * @param value the read-only value
+     */
     void uniform(@NotNull String name, @NotNull Object value);
 
-    void pushIndex();
-
-    void jumpTo(final int index);
-
+    /**
+     * Start execution.
+     */
     void start();
 
-    void bind(@NotNull String name);
+    /**
+     * @return Whether execution is blocked
+     */
+    boolean isBlocked();
 
-    void unbind();
-
+    /**
+     * @return Node Tree
+     */
     @Nullable
-    Object getCurBound();
-
-    boolean getBool(@NotNull String name);
-
-    void doAction(@NotNull String actionName, @NotNull Object[] args);
-
-    @NotNull
     NodeTree getTree();
 
-    void setTree(@NotNull NodeTree tree);
+    /**
+     * @param tree Node Tree
+     */
+    void setTree(@Nullable NodeTree tree);
 
+    /**
+     * @return current executing node
+     */
     @NotNull
     Node getCurNode();
 
+    /**
+     * Add an action or overwrite it.
+     *
+     * @param name   the name of action
+     * @param action the callback
+     */
     void addAction(@NotNull String name, IAction action);
+
+    /**
+     * Remove an action if it exists.
+     *
+     * @param name the name of action
+     */
+    void removeAction(@NotNull String name);
 
     /**
      * Reset all fields of the interpreter.
@@ -59,30 +118,13 @@ public interface IInterpreter {
      */
     void clearRuntimeStates();
 
+    /**
+     * @return whether the execution was finished or hadn't started yet.
+     */
     boolean isEnd();
 
-    void rollbackPopIndex();
-
-    void popIndex();
-
-    int getCurIndex();
-
-    void set(@NotNull String name, @NotNull Object value);
-
     /**
-     * Gets the existed value
-     *
-     * @param name the key
-     * @param <T>  which type you want (NOTE: not guarantee it's)
-     * @return the value
-     * @throws ClassCastException   raises if the value doesn't match the type
-     * @throws NoSuchValueException raises if the value doesn't exist
+     * @return current index of execution.
      */
-    @NotNull <T> T get(@NotNull String name);
-
-    void terminate();
-
-    void blockExecute();
-
-    void continueExecute();
+    int getCurIndex();
 }

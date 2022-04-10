@@ -4,7 +4,7 @@ import opengal.core.NodeTree;
 import opengal.experssion.IdentExpression;
 import opengal.tree.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class GenTestTree {
     /*
@@ -99,8 +99,11 @@ public class GenTestTree {
 
         nodes.add(StopNode.X);          //18
         NodeTree tree = new NodeTree(nodes);
-        tree.fileName = "TestGAL";
-        tree.addInput("Plum");
+        tree.file = "TestGAL";
+        Set<String> inputs = new HashSet<>(Collections.singletonList(
+                "Plum"
+        ));
+        tree.setInputs(inputs);
         return tree;
     }
 }

@@ -1,7 +1,6 @@
 package opengal.experssion;
 
-import opengal.excpetions.EmptyExprException;
-import opengal.excpetions.ExprTokenSplitException;
+import opengal.exceptions.ExprTokenSplitException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -36,7 +35,7 @@ public class ExprUtils {
     public static Collection<String> splitTokens(@NotNull String expr) {
         expr = expr.trim();
         // So the first char mustn't be a whitespace
-        if (expr.length() == 0) throw new EmptyExprException();
+        if (expr.length() == 0) throw new ExprTokenSplitException(expr + " is empty.");
         ArrayList<String> tokens = new ArrayList<>();
         StringBuilder b = new StringBuilder();
         // Peeks the first char

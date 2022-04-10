@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +29,12 @@ public final class BoolOperatorExpression implements Expression<Boolean> {
     }
 
     @Override
-    public @NotNull Boolean calculate(IInterpreter interpreter) {
+    public @NotNull Boolean calculate(@NotNull IRuntime runtime) {
         switch (opCode) {
             case 0:
-                return a.calculate(interpreter) && b.calculate(interpreter); // &&
+                return a.calculate(runtime) && b.calculate(runtime); // &&
             case 1:
-                return a.calculate(interpreter) || b.calculate(interpreter); // ||
+                return a.calculate(runtime) || b.calculate(runtime); // ||
             default:
                 throw new RuntimeException("unknown opcode: " + opCode);
         }

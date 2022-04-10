@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.core.OpenGAL;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ public class NothingExpression implements Expression<Object> {
     public static final NothingExpression X = new NothingExpression();
 
     @Override
-    public @NotNull Object calculate(IInterpreter interpreter) {
+    public @NotNull Object calculate(@NotNull IRuntime runtime) {
         return OpenGAL.Nothing;
     }
 

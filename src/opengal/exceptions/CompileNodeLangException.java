@@ -1,4 +1,4 @@
-package opengal.excpetions;
+package opengal.exceptions;
 
 public class CompileNodeLangException extends RuntimeException {
     public CompileNodeLangException() {

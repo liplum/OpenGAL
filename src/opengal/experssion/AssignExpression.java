@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +22,9 @@ public final class AssignExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(IInterpreter interpreter) {
-        T result = exp.calculate(interpreter);
-        interpreter.set(ident.key, result);
+    public @NotNull T calculate(@NotNull IRuntime runtime) {
+        T result = exp.calculate(runtime);
+        runtime.set(ident.key, result);
         return result;
     }
 

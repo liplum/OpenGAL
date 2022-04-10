@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,35 +35,35 @@ public final class CompareExpression implements Expression<Boolean> {
     }
 
     @Override
-    public @NotNull Boolean calculate(IInterpreter interpreter) {
+    public @NotNull Boolean calculate(@NotNull IRuntime runtime) {
         switch (opCode) {
             case 0:
-                return a.calculate(interpreter) == b.calculate(interpreter);// ==
+                return a.calculate(runtime) == b.calculate(runtime);// ==
             case 1:
-                return a.calculate(interpreter) != b.calculate(interpreter);// !=
+                return a.calculate(runtime) != b.calculate(runtime);// !=
             case 2: {
-                Object i = a.calculate(interpreter), j = a.calculate(interpreter);
+                Object i = a.calculate(runtime), j = a.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i > (Integer) j;// >
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
             case 3: {
-                Object i = a.calculate(interpreter), j = a.calculate(interpreter);
+                Object i = a.calculate(runtime), j = a.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i < (Integer) j;// <
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
             case 4: {
-                Object i = a.calculate(interpreter), j = a.calculate(interpreter);
+                Object i = a.calculate(runtime), j = a.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i >= (Integer) j;// >=
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
             case 5: {
-                Object i = a.calculate(interpreter), j = a.calculate(interpreter);
+                Object i = a.calculate(runtime), j = a.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i <= (Integer) j;// <=
                 }

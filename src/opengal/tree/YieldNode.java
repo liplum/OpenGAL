@@ -1,6 +1,6 @@
 package opengal.tree;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import opengal.core.OpenGAL;
 import opengal.experssion.Expression;
 import opengal.nl.SerializeUtils;
@@ -14,7 +14,7 @@ public final class YieldNode implements Node {
     public Expression<?> expr = OpenGAL.NothingExpr;
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
+    public void serialize(@NotNull DataOutput output) throws IOException {
         boolean hasExpr = expr != OpenGAL.NothingExpr;
         output.writeBoolean(hasExpr);
         if (hasExpr) {
@@ -23,7 +23,7 @@ public final class YieldNode implements Node {
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
         boolean hasExpr = input.readBoolean();
         if (hasExpr) {
             expr = SerializeUtils.deserializeExpr(input);
@@ -31,9 +31,9 @@ public final class YieldNode implements Node {
     }
 
     @Override
-    public void operate(IInterpreter in) {
-        in.set("__yield__", expr.calculate(in));
-        in.blockExecute();
+    public void operate(@NotNull IRuntime runtime) {
+        runtime.set("__yield__", expr.calculate(runtime));
+        runtime.blockExecution();
     }
 
     @Override

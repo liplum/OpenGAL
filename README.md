@@ -27,6 +27,7 @@ dependencies {
 ## Also see
 - If you are seeking a compiler, see [this repository](https://github.com/liplum/OpenGalPlumy).
 - If you want to learn OpenGAL, see [this tutorial](/Tutorial.md).
+- The specification of OpenGAL is on [this documentation](/Specification.md).
 
 ## Licence
 Because OpenGAL is still under development, at present, the contributors of this repository reserve all right.

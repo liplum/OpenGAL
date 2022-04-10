@@ -1,16 +1,16 @@
-package opengal.excpetions;
+package opengal.exceptions;
 
 import opengal.core.NodeTree;
 
-public class NoSuchActionException extends RuntimeException {
+public class NoSuchActionException extends InterpretException {
     public NoSuchActionException(String message) {
         super(message);
     }
 
     public NoSuchActionException(NodeTree tree, String message) {
         super(
-                tree.fileName != null ?
-                        message + " in " + tree.fileName :
+                tree.file != null ?
+                        message + " in " + tree.file :
                         message
         );
     }

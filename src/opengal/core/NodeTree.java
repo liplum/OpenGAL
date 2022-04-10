@@ -4,27 +4,26 @@ import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class NodeTree {
+    private List<Node> nodes;
     @NotNull
-    private final List<Node> nodes;
+    private Set<String> inputs = Collections.emptySet();
     @NotNull
-    private final Set<String> inputs = new HashSet<>();
-    @NotNull
-    private final HashMap<String, Object> metas = new HashMap<>();
+    private Map<String, Set<String>> metas = Collections.emptyMap();
     @Nullable
-    public String fileName;
-    @NotNull
-    public String nothingName = "Nothing";
+    public String file;
 
-    public NodeTree(
-            @NotNull List<Node> nodes
-    ) {
+    public NodeTree(@NotNull List<Node> nodes) {
         this.nodes = nodes;
+    }
+
+    public NodeTree() {
+        this.nodes = Collections.emptyList();
     }
 
     public int getSize() {
@@ -41,17 +40,25 @@ public class NodeTree {
         return nodes;
     }
 
+    public void setNodes(@NotNull List<Node> nodes) {
+        this.nodes = nodes;
+    }
+
     @NotNull
-    public HashMap<String, Object> getMetas() {
+    public Map<String, Set<String>> getMetas() {
         return metas;
+    }
+
+    public void setInputs(@NotNull Set<String> inputs) {
+        this.inputs = inputs;
+    }
+
+    public void setMetas(@NotNull Map<String, Set<String>> metas) {
+        this.metas = metas;
     }
 
     @NotNull
     public Set<String> getInputs() {
         return inputs;
-    }
-
-    public void addInput(String input) {
-        inputs.add(input);
     }
 }

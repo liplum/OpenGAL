@@ -1,6 +1,6 @@
 package opengal.tree;
 
-import opengal.core.IInterpreter;
+import opengal.core.IRuntime;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -11,18 +11,18 @@ public final class BindNode implements Node {
     public String boundName;
 
     @Override
-    public void serialize(DataOutput output) throws IOException {
+    public void serialize(@NotNull DataOutput output) throws IOException {
         output.writeUTF(boundName);
     }
 
     @Override
-    public void deserialize(DataInput input) throws IOException {
+    public void deserialize(@NotNull DataInput input) throws IOException {
         boundName = input.readUTF();
     }
 
     @Override
-    public void operate(IInterpreter in) {
-        in.bind(boundName);
+    public void operate(@NotNull IRuntime runtime) {
+        runtime.bind(boundName);
     }
 
 

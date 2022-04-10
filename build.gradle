@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'opengal'
-version '0.2'
+version '0.3'
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]
@@ -27,5 +27,9 @@ test {
     useJUnitPlatform {
         includeTags 'fast'
         excludeTags 'slow'
+    }
+    testLogging {
+        showStandardStreams = true
+        testLogging.exceptionFormat = 'full'
     }
 }

@@ -14,13 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.util.LinkedList;
 import java.util.Random;
 
-@SuppressWarnings("CodeBlock2Expr")
+import static opengal.utils.Output.compose;
+
 @ExtendWith({Timing.class, Memory.class})
 public class TestInterpreter {
     static public NodeTree tree;
     static public Interpreter in;
     static public LinkedList<String> output = new LinkedList<>();
-    public boolean silent = true;
     Random random = new Random();
 
     @Test
@@ -29,6 +29,12 @@ public class TestInterpreter {
         in.start();
         while (!in.isEnd()) {
             in.execute();
+        }
+        String outputs = compose(output);
+        //noinspection SpellCheckingInspection
+        if (outputs.equals("null 10null 1null Wow, you got true!Plum#5978 YES!null But you're still alive!") ||
+                outputs.equals("null 10null 1null NO!null Oh no, you got false... TATnull But you're still alive!")) {
+            throw new AssertionError();
         }
     }
 
@@ -44,40 +50,19 @@ public class TestInterpreter {
         }
     }
 
-    @AfterEach
-    public void printOutput() {
-        if (!silent) {
-            System.out.println("Output:");
-            for (String line : output) {
-                System.out.print(line);
-            }
-            System.out.flush();
-        }
-    }
-
     @BeforeEach
     public void genInterpreter() {
         in = new Interpreter();
         in.addAction("output", args -> {
-            if (!silent) {
-                output.add(in.getCurBound() + " ");
-                for (Object arg : args) {
-                    output.add(arg.toString());
-                }
+            output.add(in.getCurBound() + " ");
+            for (Object arg : args) {
+                output.add(arg.toString());
             }
         });
 
         tree = GenTestTree.genTree();
         in.uniform("Plum", "Plum#5978");
         in.set("IsTrue", random.nextBoolean());
-        if (!silent) {
-            in.beforeExecute(() -> {
-                output.add("[" + in.getCurIndex() + "]");
-            });
-            in.afterExecute(() -> {
-                output.add("\n");
-            });
-        }
         in.setTree(tree);
     }
 }

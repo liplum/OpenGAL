@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.excpetions.ExpressionException;
+import opengal.exceptions.ExpressionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
