@@ -7,7 +7,10 @@ import opengal.tree.Node;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 public class Interpreter implements IInterpreter {
     @NotNull
@@ -18,24 +21,26 @@ public class Interpreter implements IInterpreter {
     private final HashMap<String, Object> fields = new HashMap<>();
     @NotNull
     private final HashSet<String> invariants = new HashSet<>();
-    private NodeTree tree;
-    private int index;
-    private Node curNode;
-    @Nullable
-    private Listener endListener;
-    @Nullable
-    private Listener blockedListener;
-    @Nullable
-    private ArrayList<Listener> beforeExecutes;
-    @Nullable
-    private ArrayList<Listener> afterExecutes;
-    @Nullable
-    private Listener onBound;
+    @NotNull
+    private final HashSet<Listener> endListeners = new HashSet<>();
+    @NotNull
+    private final HashSet<Listener> blockedListeners = new HashSet<>();
+    @NotNull
+    private final HashSet<Listener> resumedListeners = new HashSet<>();
+    @NotNull
+    private final HashSet<Listener> beforeExecutes = new HashSet<>();
+    @NotNull
+    private final HashSet<Listener> afterExecutes = new HashSet<>();
+    @NotNull
+    private final HashSet<Listener> boundListeners = new HashSet<>();
     @Nullable
     private Object curBound;
     private boolean isEnd = true;
     private boolean noNext = false;
     private boolean isBlocked = false;
+    private NodeTree tree;
+    private int index;
+    private Node curNode;
 
     @Override
     public boolean isEnd() {
@@ -44,15 +49,13 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void execute() {
-        if(tree == null) throw new RuntimeException();
+        if (tree == null) throw new RuntimeException();
         if (isBlocked) return;
         if (index < 0 || index >= tree.getSize())
             throw new InterpretException("Current index " + index + " is out of range [0," + tree.getSize() + "].");
         curNode = tree.get(index);
-        if (beforeExecutes != null) {
-            for (Listener before : beforeExecutes)
-                before.on();
-        }
+        for (Listener before : beforeExecutes)
+            before.on();
         if (!noNext)
             index++;
         try {
@@ -61,12 +64,11 @@ public class Interpreter implements IInterpreter {
             throw new InterpretException("Index at " + index + " " + curNode.toString(), e);
         }
         noNext = false;
-        if (afterExecutes != null) {
-            for (Listener after : afterExecutes)
-                after.on();
-        }
-        if (isEnd && endListener != null)
-            endListener.on();
+        for (Listener after : afterExecutes)
+            after.on();
+        if (isEnd)
+            for (Listener end : endListeners)
+                end.on();
     }
 
     @Override
@@ -77,33 +79,32 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void beforeExecute(@NotNull Listener listener) {
-        if (beforeExecutes == null) {
-            beforeExecutes = new ArrayList<>();
-        }
         beforeExecutes.add(listener);
     }
 
     @Override
     public void afterExecute(@NotNull Listener listener) {
-        if (afterExecutes == null) {
-            afterExecutes = new ArrayList<>();
-        }
         afterExecutes.add(listener);
     }
 
     @Override
     public void onBound(@NotNull Listener listener) {
-        onBound = listener;
+        boundListeners.add(listener);
     }
 
     @Override
     public void onEnd(@NotNull Listener listener) {
-        endListener = listener;
+        endListeners.add(listener);
     }
 
     @Override
     public void onBlocked(@NotNull Listener listener) {
-        blockedListener = listener;
+        blockedListeners.add(listener);
+    }
+
+    @Override
+    public void onResumed(@NotNull Listener listener) {
+        resumedListeners.add(listener);
     }
 
     @Override
@@ -132,21 +133,20 @@ public class Interpreter implements IInterpreter {
 
     @Override
     public void blockExecution() {
-        if (isBlocked) {
-            throw new ExecutionStatusException("Can't block from blocked.");
-        }
-        isBlocked = true;
-        if (blockedListener != null) {
-            blockedListener.on();
+        if (!isBlocked) {
+            isBlocked = true;
+            for (Listener block : blockedListeners)
+                block.on();
         }
     }
 
     @Override
     public void resumeExecution() {
-        if (!isBlocked) {
-            throw new ExecutionStatusException("Can't resume from non-blocked.");
+        if (isBlocked) {
+            isBlocked = false;
+            for (Listener resume : resumedListeners)
+                resume.on();
         }
-        isBlocked = false;
     }
 
     @Override
@@ -187,9 +187,8 @@ public class Interpreter implements IInterpreter {
             throw new NoSuchValueException(tree, name);
         }
         curBound = bound;
-        if (onBound != null) {
-            onBound.on();
-        }
+        for (Listener listener : boundListeners)
+            listener.on();
     }
 
     public void unbind() {
@@ -286,10 +285,14 @@ public class Interpreter implements IInterpreter {
     public void reset() {
         clearRuntimeStates();
         name2Action.clear();
-        beforeExecutes = null;
-        afterExecutes = null;
-        endListener = null;
-        onBound = null;
+        beforeExecutes.clear();
+        afterExecutes.clear();
+
+        resumedListeners.clear();
+        blockedListeners.clear();
+        endListeners.clear();
+        boundListeners.clear();
+
         tree = null;
     }
 

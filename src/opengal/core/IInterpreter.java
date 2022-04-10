@@ -17,8 +17,6 @@ public interface IInterpreter extends IRuntime {
 
     /**
      * Add a listener which will be called when execution of current Node Tree finished.
-     *
-     * @param listener whether it supports single/multiple-listener based on the implementation.
      */
     void onEnd(@NotNull Listener listener);
 
@@ -28,8 +26,6 @@ public interface IInterpreter extends IRuntime {
      * {@linkplain IInterpreter#getCurIndex() index} and {@linkplain IInterpreter#getCurNode() current node}
      * have been already set correctly and prepared to execute a node.
      * </p>
-     *
-     * @param listener whether it supports single/multiple-listener based on the implementation.
      */
     void beforeExecute(@NotNull Listener listener);
 
@@ -39,22 +35,21 @@ public interface IInterpreter extends IRuntime {
      * {@linkplain IInterpreter#getCurIndex() index} has been already changed
      * and but hasn't check whether the Node Tree was ended yet.
      * </p>
-     *
-     * @param listener whether it supports single/multiple-listener based on the implementation.
      */
     void afterExecute(@NotNull Listener listener);
 
     /**
      * Set the listener which will be called when execution was blocked.
-     *
-     * @param listener whether it supports single/multiple-listener based on the implementation.
      */
     void onBlocked(@NotNull Listener listener);
 
     /**
+     * Set the listener which will be called when execution was resumed.
+     */
+    void onResumed(@NotNull Listener listener);
+
+    /**
      * Set the listener which will be called when a new object was bound.
-     *
-     * @param listener whether it supports single/multiple-listener based on the implementation.
      */
     void onBound(@NotNull Listener listener);
 
