@@ -1,7 +1,11 @@
 plugins {
     id 'java'
 }
-
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 group 'opengal'
 version '0.3.1'
 apply plugin: "java"
@@ -16,6 +20,7 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'com.github.liplum:TestUtils:v0.1'
 }
 
 jar {

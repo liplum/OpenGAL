@@ -1,9 +1,9 @@
 package opengal.test;
 
+import net.liplum.test.extension.Memory;
+import net.liplum.test.extension.Timing;
 import opengal.experssion.Expression;
 import opengal.experssion.ExpressionParser;
-import opengal.extension.Memory;
-import opengal.extension.Timing;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

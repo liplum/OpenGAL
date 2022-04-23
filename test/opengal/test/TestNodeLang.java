@@ -1,9 +1,9 @@
 package opengal.test;
 
+import net.liplum.test.extension.Memory;
+import net.liplum.test.extension.Timing;
 import opengal.core.Interpreter;
 import opengal.core.NodeTree;
-import opengal.extension.Memory;
-import opengal.extension.Timing;
 import opengal.nl.NodeLang;
 import opengal.utils.GenTestTree;
 import org.junit.jupiter.api.*;
