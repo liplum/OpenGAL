@@ -20,7 +20,7 @@ ___
 Add the dependency:
 ```groovy
 dependencies {
-    implementation 'com.github.liplum:OpenGAL:v0.1'
+    implementation 'com.github.liplum:OpenGAL:v0.3.1'
 }
 ```
 
@@ -30,6 +30,4 @@ dependencies {
 - The specification of OpenGAL is on [this documentation](/Specification.md).
 
 ## Licence
-Because OpenGAL is still under development, at present, the contributors of this repository reserve all right.
-
-Considering changing licence...
+MIT License, Copyright (c) 2022 Liplum
