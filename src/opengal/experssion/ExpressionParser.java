@@ -27,6 +27,10 @@ public class ExpressionParser implements IExpressionParser {
     @SuppressWarnings("unchecked")
     HashSet<String>[] priorityMap = new HashSet[11];
 
+    public static ExpressionParser by(String expression) {
+        return new ExpressionParser(ExprUtils.splitTokens(expression));
+    }
+
     public ExpressionParser(Collection<String> tokens) {
         this.tokens.addAll(tokens);
 

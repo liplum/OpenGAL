@@ -7,7 +7,7 @@ allprojects {
     }
 }
 group 'opengal'
-version '0.4'
+version '0.4.1'
 apply plugin: "java"
 sourceSets.main.java.srcDirs = ["src"]
 sourceSets.test.java.srcDirs = ["test"]

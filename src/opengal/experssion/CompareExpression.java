@@ -37,40 +37,40 @@ public final class CompareExpression implements Expression<Boolean> {
     @Override
     public @NotNull Boolean calculate(@NotNull IExpressionReceiver runtime) {
         switch (opCode) {
-            case 0:
+            case Equals:
                 return a.calculate(runtime) == b.calculate(runtime);// ==
-            case 1:
+            case NotEquals:
                 return a.calculate(runtime) != b.calculate(runtime);// !=
-            case 2: {
-                Object i = a.calculate(runtime), j = a.calculate(runtime);
+            case GreaterThan: {
+                Object i = a.calculate(runtime), j = b.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i > (Integer) j;// >
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
-            case 3: {
-                Object i = a.calculate(runtime), j = a.calculate(runtime);
+            case LessThan: {
+                Object i = a.calculate(runtime), j = b.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i < (Integer) j;// <
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
-            case 4: {
-                Object i = a.calculate(runtime), j = a.calculate(runtime);
+            case GreaterEquals: {
+                Object i = a.calculate(runtime), j = b.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i >= (Integer) j;// >=
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
-            case 5: {
-                Object i = a.calculate(runtime), j = a.calculate(runtime);
+            case LessEquals: {
+                Object i = a.calculate(runtime), j = b.calculate(runtime);
                 if (i instanceof Integer && j instanceof Integer) {
                     return (Integer) i <= (Integer) j;// <=
                 }
                 throw new RuntimeException("compare the non-number variable!");
             }
             default:
-                throw new RuntimeException("unknow opcode: " + opCode);
+                throw new RuntimeException("unknown opcode: " + opCode);
         }
     }
 
