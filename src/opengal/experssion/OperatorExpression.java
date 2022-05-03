@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IRuntime;
+import opengal.core.IExpressionReceiver;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public final class OperatorExpression implements Expression<Integer> {
     }
 
     @Override
-    public @NotNull Integer calculate(@NotNull IRuntime runtime) {
+    public @NotNull Integer calculate(@NotNull IExpressionReceiver runtime) {
         switch (opCode) {
             case 0:
                 return a.calculate(runtime) + b.calculate(runtime); // +

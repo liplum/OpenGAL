@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IRuntime;
+import opengal.core.IExpressionReceiver;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public final class ParExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(@NotNull IRuntime runtime) {
+    public @NotNull T calculate(@NotNull IExpressionReceiver runtime) {
         return expr.calculate(runtime);
     }
 

@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IRuntime;
+import opengal.core.IExpressionReceiver;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface Expression<Type> extends Iterable<Expression<?>> {
     @NotNull
-    Type calculate(@NotNull IRuntime runtime);
+    Type calculate(@NotNull IExpressionReceiver runtime);
 
     @NotNull
     String toString();

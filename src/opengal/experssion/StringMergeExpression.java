@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IRuntime;
+import opengal.core.IExpressionReceiver;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public final class StringMergeExpression implements Expression<String> {
     }
 
     @Override
-    public @NotNull String calculate(@NotNull IRuntime runtime) {
+    public @NotNull String calculate(@NotNull IExpressionReceiver runtime) {
         String str = String.valueOf(a.calculate(runtime));
         return str + b.calculate(runtime);
     }

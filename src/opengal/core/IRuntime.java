@@ -6,7 +6,7 @@ import opengal.exceptions.OverJumpException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IRuntime {
+public interface IRuntime extends IExpressionReceiver {
 
     /**
      * Push current index into the call stack.
@@ -75,24 +75,6 @@ public interface IRuntime {
      * Pop the call stack.
      */
     void popIndex();
-
-    /**
-     * Set a value or add it.
-     * @param name the key
-     * @param value nonnull value
-     */
-    void set(@NotNull String name, @NotNull Object value);
-
-    /**
-     * Get the existed value
-     *
-     * @param name the key
-     * @param <T>  which type you want (NOTE: not guarantee it's)
-     * @return the value
-     * @throws ClassCastException   raises if the value doesn't match the given type
-     * @throws NoSuchValueException raises if the value doesn't exist
-     */
-    @NotNull <T> T get(@NotNull String name);
 
     /**
      * Get the value or {@link OpenGAL#Nothing}

@@ -31,6 +31,7 @@ public class TestNodeLang {
         NodeTree tree = GenTestTree.genTree();
 
         NodeLang nl = NodeLang.Default;
+
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             nl.serializeTo(tree, os);
             file = os.toByteArray();

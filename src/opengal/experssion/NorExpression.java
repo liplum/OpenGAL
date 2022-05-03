@@ -1,6 +1,6 @@
 package opengal.experssion;
 
-import opengal.core.IRuntime;
+import opengal.core.IExpressionReceiver;
 import opengal.nl.SerializeUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public final class NorExpression implements Expression<Boolean> {
     }
 
     @Override
-    public @NotNull Boolean calculate(@NotNull IRuntime runtime) {
+    public @NotNull Boolean calculate(@NotNull IExpressionReceiver runtime) {
         return !exp.calculate(runtime);
     }
 
