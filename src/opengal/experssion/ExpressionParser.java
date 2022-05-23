@@ -8,6 +8,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
+/**
+ * 将一组token或一段字符串翻译为表达式结构树的解析工具
+ * 目前支持的符号类型包括：
+ * <pre>
+ * 数学运算  + - * / %
+ * 逻辑运算  && || !
+ * 比较运算  == != > >= < <=
+ * 字符拼接  ..
+ * 赋值符号  =
+ * </pre>
+ * 关于符号拓展尚未进行很好的实现，后续可能开放定义运算符
+ *
+ * <p>关于表达式，请参见{@link Expression}
+ *
+ * @author EBwilson
+ **/
 public class ExpressionParser implements IExpressionParser {
 
     private static final HashSet<String> BIN_OPERATOR = new HashSet<>(
@@ -27,6 +43,13 @@ public class ExpressionParser implements IExpressionParser {
     @SuppressWarnings("unchecked")
     HashSet<String>[] priorityMap = new HashSet[11];
 
+    /**
+     * 将传入的字符按规范分割为token，并将其用作初始化一个表达式解析器实例
+     * <p>请参见{@link ExprUtils}内的工具方法<strong>splitTokens(String expr)</strong>
+     *
+     * @param expression 要被解析的表达式字符串
+     * @return 一个用传入字符串构建的解析器实例
+     * */
     public static ExpressionParser by(String expression) {
         return new ExpressionParser(ExprUtils.splitTokens(expression));
     }
@@ -35,6 +58,11 @@ public class ExpressionParser implements IExpressionParser {
         return by(expression).parse();
     }
 
+    /**
+     * 使用给出的tokens列表创建一个表达式分析器实例，tokens应当是按规范正确被分割的元素构成的顺序集合
+     *
+     * @param tokens 需要解析的tokens顺序集合
+     * */
     public ExpressionParser(Collection<String> tokens) {
         this.tokens.addAll(tokens);
 
@@ -50,12 +78,12 @@ public class ExpressionParser implements IExpressionParser {
         setParseUnities();
     }
 
+    /**分配所有运算符的优先级池，这里应当正确的进行优先级划分，若重写此方法应当仅添加运算符，不应改变运算符的优先级*/
     public void setParseUnities() {
         for (int i = 0; i < priorityMap.length; i++) {
             priorityMap[i] = new HashSet<>();
         }
 
-        //priority 0 "(" ")"
         priorityMap[0].add("=");
         priorityMap[1].add("..");
         priorityMap[2].add("||");
@@ -76,6 +104,12 @@ public class ExpressionParser implements IExpressionParser {
         priorityMap[10].add(")");
     }
 
+    /**
+     * 解析定义的表达式，返回表达式树结构的根
+     *
+     * @see Expression
+     * @return 表达式树的根表达式
+     * */
     @Override
     @SuppressWarnings("unchecked")
     public <T> @NotNull Expression<T> parse() {
@@ -89,14 +123,7 @@ public class ExpressionParser implements IExpressionParser {
         return (Expression<T>) root.parse();
     }
 
-    protected interface ParseAcceptor2 {
-        Expression<?> accept(ParseUnit a, ParseUnit b);
-    }
-
-    protected interface ParseAcceptor {
-        Expression<?> accept(Expression<?> a, ParseUnit b);
-    }
-
+    /**表达式解析的单元，表达式解析树的节点，通过读取token进行解析*/
     protected class ParseUnit {
         public int depth;
         public boolean isRoot;
@@ -108,10 +135,11 @@ public class ExpressionParser implements IExpressionParser {
         protected ParseUnit curr;
         protected float bracketCount = 0;
 
+        /**读取一个token,并向下方的子单元进行迭代读取*/
         public void read(String token) {
             boolean mark = true;
 
-            if (token.equals("(")) {
+            if (token.equals("(")) {//TODO: 括号也许不应该被这样处理，内联到方法内这似乎很愚蠢
                 bracketCount++;
             } else if (token.equals(")")) {
                 bracketCount--;
@@ -153,6 +181,7 @@ public class ExpressionParser implements IExpressionParser {
             curr.read(token);
         }
 
+        /**进行向子单元迭代的分析行为，构建关联子表达式分支的表达式并将其返回*/
         @SuppressWarnings("unchecked")
         public Expression<?> parse() {
             Expression<?> result = null;
@@ -184,7 +213,7 @@ public class ExpressionParser implements IExpressionParser {
                                 break;
                             case "!=":
                                 result = handleCompareOpCode(result, i, 1);
-
+                                break;
                             case ">":
                                 result = handleCompareOpCode(result, i, 2);
                                 break;
@@ -377,5 +406,15 @@ public class ExpressionParser implements IExpressionParser {
             if (depth == 0 && !isRoot) builder.append(")");
             return builder.toString();
         }
+    }
+
+    @FunctionalInterface
+    protected interface ParseAcceptor2 {
+        Expression<?> accept(ParseUnit a, ParseUnit b);
+    }
+
+    @FunctionalInterface
+    protected interface ParseAcceptor {
+        Expression<?> accept(Expression<?> a, ParseUnit b);
     }
 }
