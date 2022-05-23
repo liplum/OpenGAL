@@ -2,11 +2,14 @@ package opengal.test;
 
 import net.liplum.test.extension.Memory;
 import net.liplum.test.extension.Timing;
+import opengal.core.IExpressionReceiver;
 import opengal.experssion.Expression;
 import opengal.experssion.ExpressionParser;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +22,19 @@ public class ExprTest {
             "@au", "=", "(", "@c", "*", "(", "$ u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
 
+    static class FakeMemory implements IExpressionReceiver {
+
+        @Override
+        public void set(@NotNull String name, @NotNull Object value) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public <T> @NotNull T get(@NotNull String name) {
+            throw new NotImplementedException();
+        }
+    }
+
     @Test
     @Tag("fast")
     public void testExpr() {
@@ -26,6 +42,9 @@ public class ExprTest {
         ExpressionParser parser = new ExpressionParser(tokens);
         expr = parser.parse();
         assert expr.toString().equals("@au = (@c * ($ u + 43)) * 30 + 6 >= 74");
+
+        assert (boolean) ExpressionParser.parseBy("!1").calculate(new FakeMemory());
+        assert (boolean) ExpressionParser.parseBy("1 != abc").calculate(new FakeMemory());
     }
 
     @Test

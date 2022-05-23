@@ -20,8 +20,8 @@ public final class NorExpression implements Expression<Boolean> {
     }
 
     @Override
-    public @NotNull Boolean calculate(@NotNull IExpressionReceiver runtime) {
-        return !exp.calculate(runtime);
+    public @NotNull Boolean calculate(@NotNull IExpressionReceiver memory) {
+        return !ExprUtils.isTrue(exp.calculate(memory));
     }
 
     @Override

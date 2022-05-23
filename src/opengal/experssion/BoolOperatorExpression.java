@@ -7,7 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 public final class BoolOperatorExpression implements Expression<Boolean> {
     public static final int
@@ -29,12 +32,17 @@ public final class BoolOperatorExpression implements Expression<Boolean> {
     }
 
     @Override
-    public @NotNull Boolean calculate(@NotNull IExpressionReceiver runtime) {
+    public @NotNull Boolean calculate(@NotNull IExpressionReceiver memory) {
+        Object i = a.calculate(memory);
+        Object j = b.calculate(memory);
+        boolean b1 = ExprUtils.isTrue(i);
+        boolean b2 = ExprUtils.isTrue(j);
+
         switch (opCode) {
-            case 0:
-                return a.calculate(runtime) && b.calculate(runtime); // &&
-            case 1:
-                return a.calculate(runtime) || b.calculate(runtime); // ||
+            case And:
+                return b1 && b2; // &&
+            case Or:
+                return b1 || b2; // ||
             default:
                 throw new RuntimeException("unknown opcode: " + opCode);
         }

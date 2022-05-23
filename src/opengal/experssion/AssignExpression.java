@@ -22,9 +22,9 @@ public final class AssignExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(@NotNull IExpressionReceiver runtime) {
-        T result = exp.calculate(runtime);
-        runtime.set(ident.key, result);
+    public @NotNull T calculate(@NotNull IExpressionReceiver memory) {
+        T result = exp.calculate(memory);
+        memory.set(ident.key, result);
         return result;
     }
 

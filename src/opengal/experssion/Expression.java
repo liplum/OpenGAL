@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public interface Expression<Type> extends Iterable<Expression<?>> {
     @NotNull
-    Type calculate(@NotNull IExpressionReceiver runtime);
+    Type calculate(@NotNull IExpressionReceiver memory);
 
     @NotNull
     String toString();

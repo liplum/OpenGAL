@@ -31,6 +31,10 @@ public class ExpressionParser implements IExpressionParser {
         return new ExpressionParser(ExprUtils.splitTokens(expression));
     }
 
+    public static <T> Expression<T> parseBy(String expression){
+        return by(expression).parse();
+    }
+
     public ExpressionParser(Collection<String> tokens) {
         this.tokens.addAll(tokens);
 

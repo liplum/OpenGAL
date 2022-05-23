@@ -34,18 +34,18 @@ public final class OperatorExpression implements Expression<Integer> {
     }
 
     @Override
-    public @NotNull Integer calculate(@NotNull IExpressionReceiver runtime) {
+    public @NotNull Integer calculate(@NotNull IExpressionReceiver memory) {
         switch (opCode) {
             case 0:
-                return a.calculate(runtime) + b.calculate(runtime); // +
+                return a.calculate(memory) + b.calculate(memory); // +
             case 1:
-                return a.calculate(runtime) - b.calculate(runtime); // -
+                return a.calculate(memory) - b.calculate(memory); // -
             case 2:
-                return a.calculate(runtime) * b.calculate(runtime); // *
+                return a.calculate(memory) * b.calculate(memory); // *
             case 3:
-                return a.calculate(runtime) / b.calculate(runtime); // /
+                return a.calculate(memory) / b.calculate(memory); // /
             case 4:
-                return a.calculate(runtime) % b.calculate(runtime); // %
+                return a.calculate(memory) % b.calculate(memory); // %
             default:
                 throw new RuntimeException("unknow opcode: " + opCode);
         }

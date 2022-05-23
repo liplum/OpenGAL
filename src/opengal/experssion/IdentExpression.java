@@ -21,8 +21,8 @@ public final class IdentExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(@NotNull IExpressionReceiver runtime) {
-        return runtime.get(key);
+    public @NotNull T calculate(@NotNull IExpressionReceiver memory) {
+        return memory.get(key);
     }
 
     @Override

@@ -21,7 +21,7 @@ public final class ConstantExpression<T> implements Expression<T> {
     }
 
     @Override
-    public @NotNull T calculate(@NotNull IExpressionReceiver runtime) {
+    public @NotNull T calculate(@NotNull IExpressionReceiver memory) {
         return value;
     }
 

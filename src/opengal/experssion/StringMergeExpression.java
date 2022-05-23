@@ -21,9 +21,9 @@ public final class StringMergeExpression implements Expression<String> {
     }
 
     @Override
-    public @NotNull String calculate(@NotNull IExpressionReceiver runtime) {
-        String str = String.valueOf(a.calculate(runtime));
-        return str + b.calculate(runtime);
+    public @NotNull String calculate(@NotNull IExpressionReceiver memory) {
+        String str = String.valueOf(a.calculate(memory));
+        return str + b.calculate(memory);
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Objects;
 
 public final class CompareExpression implements Expression<Boolean> {
     public static final int
@@ -34,40 +35,43 @@ public final class CompareExpression implements Expression<Boolean> {
     public CompareExpression() {
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public @NotNull Boolean calculate(@NotNull IExpressionReceiver runtime) {
+    public @NotNull Boolean calculate(@NotNull IExpressionReceiver memory) {
         switch (opCode) {
             case Equals:
-                return a.calculate(runtime) == b.calculate(runtime);// ==
+                return Objects.equals(a.calculate(memory), (b.calculate(memory)));// == , use Object.equals instead of ==
             case NotEquals:
-                return a.calculate(runtime) != b.calculate(runtime);// !=
+                return !Objects.equals(a.calculate(memory), (b.calculate(memory)));// !=, use !Object.equals instead of !=
             case GreaterThan: {
-                Object i = a.calculate(runtime), j = b.calculate(runtime);
-                if (i instanceof Integer && j instanceof Integer) {
-                    return (Integer) i > (Integer) j;// >
+                Object i = a.calculate(memory), j = b.calculate(memory);
+                if (i instanceof Comparable && j instanceof Comparable) {
+                    return ((Comparable) i).compareTo(j) > 0;
                 }
-                throw new RuntimeException("compare the non-number variable!");
+                throw new RuntimeException("Can't compare " + i + " > " + j);
             }
             case LessThan: {
-                Object i = a.calculate(runtime), j = b.calculate(runtime);
-                if (i instanceof Integer && j instanceof Integer) {
-                    return (Integer) i < (Integer) j;// <
+                Object i = a.calculate(memory), j = b.calculate(memory);
+                if (i instanceof Comparable && j instanceof Comparable) {
+                    return ((Comparable) i).compareTo(j) < 0;
                 }
-                throw new RuntimeException("compare the non-number variable!");
+                throw new RuntimeException("Can't compare " + i + " < " + j);
             }
             case GreaterEquals: {
-                Object i = a.calculate(runtime), j = b.calculate(runtime);
-                if (i instanceof Integer && j instanceof Integer) {
-                    return (Integer) i >= (Integer) j;// >=
+                Object i = a.calculate(memory), j = b.calculate(memory);
+                if (Objects.equals(i, j)) return true;
+                if (i instanceof Comparable && j instanceof Comparable) {
+                    return ((Comparable) i).compareTo(j) >= 0;
                 }
-                throw new RuntimeException("compare the non-number variable!");
+                throw new RuntimeException("Can't compare " + i + " >= " + j);
             }
             case LessEquals: {
-                Object i = a.calculate(runtime), j = b.calculate(runtime);
-                if (i instanceof Integer && j instanceof Integer) {
-                    return (Integer) i <= (Integer) j;// <=
+                Object i = a.calculate(memory), j = b.calculate(memory);
+                if (Objects.equals(i, j)) return true;
+                if (i instanceof Comparable && j instanceof Comparable) {
+                    return ((Comparable) i).compareTo(j) <= 0;
                 }
-                throw new RuntimeException("compare the non-number variable!");
+                throw new RuntimeException("Can't compare " + i + " <= " + j);
             }
             default:
                 throw new RuntimeException("unknown opcode: " + opCode);

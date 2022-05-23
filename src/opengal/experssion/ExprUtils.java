@@ -3,6 +3,7 @@ package opengal.experssion;
 import opengal.exceptions.ExprTokenSplitException;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static opengal.experssion.ExprUtils.TokenState.*;
@@ -181,5 +182,18 @@ public class ExprUtils {
 
     public enum TokenType {
         Whitespace, Digit, OperatorPart, Parenthesis, ReferenceSymbol, Else
+    }
+
+    public static boolean isTrue(Object obj) {
+        if (obj instanceof Boolean)
+            return (boolean) obj;
+        else if (obj instanceof String)
+            return !((String) obj).isEmpty();
+        else if (obj instanceof Array)
+            return Array.getLength(obj) > 0;
+        else if (obj instanceof Collection)
+            return !((Collection<?>) obj).isEmpty();
+        else
+            return Objects.equals(obj, 0);
     }
 }

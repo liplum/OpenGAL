@@ -15,7 +15,7 @@ public class NothingExpression implements Expression<Object> {
     public static final NothingExpression X = new NothingExpression();
 
     @Override
-    public @NotNull Object calculate(@NotNull IExpressionReceiver runtime) {
+    public @NotNull Object calculate(@NotNull IExpressionReceiver memory) {
         return OpenGAL.Nothing;
     }
 
