@@ -46,7 +46,7 @@ public class ExprUtils {
         TokenState mode = switchState(firstType);
         LinkedList<Character> stacks = asStack(expr);
         boolean quotedMode = false;
-        //boolean escapeMode = false;
+        // TODO : boolean escapeMode = false;
         while (!stacks.isEmpty()) {
             char c = stacks.pop();
             TokenType cur = matchTokenType(c);
@@ -96,7 +96,7 @@ public class ExprUtils {
                         if (cur == Quote) quotedMode = !quotedMode;
                         // String mode allows a digit or an else
                         b.append(c);
-                        if (!quotedMode) {
+                        if (cur == Quote && !quotedMode) {
                             composeTemp(tokens, b);
                             mode = switchState(cur);
                         }

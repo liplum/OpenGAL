@@ -20,15 +20,17 @@ public class ExprTest {
     Expression<?> expr;
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
     List<String> tokens = Arrays.asList(
-            "@au", "=", "(", "@c", "*", "(", "$ u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
+            "@au", "=", "(", "@c", "*", "(", "$u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
 
     public static void main(String[] args) {
         ExpressionParser parser = new ExpressionParser(Arrays.asList("true", "&&", "!", "(", "\"1\"", "!=", "\"abc\"", ")"));
         Expression<?> exp = parser.parse();
         System.out.println(exp);
-        Collection<String> tokens = ExprUtils.splitTokens("@SSS != \"ebw\" bad guy\" + 10");
+        Collection<String> tokens = ExprUtils.splitTokens("@SSS != \"ebw bad guy\" + 10");
         System.out.println(tokens);
+        Collection<String> tokens2 = ExprUtils.splitTokens("1 != abc");
+        System.out.println(tokens2);
         ExpressionParser p1 = new ExpressionParser(tokens);
         System.out.println(p1.parse());
     }
@@ -53,7 +55,8 @@ public class ExprTest {
         //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
         ExpressionParser parser = new ExpressionParser(tokens);
         expr = parser.parse();
-        assert expr.toString().equals("@au = (@c * ($ u + 43)) * 30 + 6 >= 74");
+        String exprStr = expr.toString();
+        assert exprStr.equals("@au = (@c * (\"$u\" + 43)) * 30 + 6 >= 74");
         Object testNorInt = ExpressionParser.parseBy("!1").calculate(new FakeMemory());//false
         Object testIntNotEqualsString = ExpressionParser.parseBy("1 != abc").calculate(new FakeMemory());
         assert !((boolean) testNorInt);
