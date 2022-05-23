@@ -23,7 +23,8 @@ public class ExprUtils {
     /**
      * Only Allows the ASCII quote.
      */
-    private static final char StringIndicator = '"';
+    private static final char QuoteChar = '"';
+    private static final char EscapeChar = '\\';
 
     /**
      * Splits the {@code expr} into tokens.<br/>
@@ -44,6 +45,8 @@ public class ExprUtils {
         TokenType firstType = matchTokenType(firstChar);
         TokenState mode = switchState(firstType);
         LinkedList<Character> stacks = asStack(expr);
+        boolean quotedMode = false;
+        //boolean escapeMode = false;
         while (!stacks.isEmpty()) {
             char c = stacks.pop();
             TokenType cur = matchTokenType(c);
@@ -89,10 +92,16 @@ public class ExprUtils {
                 }
                 break;
                 case Chars: {
-                    if (cur == Else || cur == Digit) {
-                        // String mode allows a digit or an else one but doesn't append "
-                        if (c != StringIndicator)
-                            b.append(c);
+                    if (cur == Else || cur == Digit || cur == Quote) {
+                        if (cur == Quote) quotedMode = !quotedMode;
+                        // String mode allows a digit or an else
+                        b.append(c);
+                        if (!quotedMode) {
+                            composeTemp(tokens, b);
+                            mode = switchState(cur);
+                        }
+                    } else if (quotedMode) {
+                        b.append(c);
                     } else {
                         // Otherwise, push it and switch state
                         composeTemp(tokens, b);
@@ -160,6 +169,10 @@ public class ExprUtils {
             return Digit;
         else if (OperatorIndicators.contains(c))
             return OperatorPart;
+        else if (c == QuoteChar)
+            return Quote;
+        else if (c == EscapeChar)
+            return Escape;
         else
             return Else;
     }
@@ -181,7 +194,7 @@ public class ExprUtils {
     }
 
     public enum TokenType {
-        Whitespace, Digit, OperatorPart, Parenthesis, ReferenceSymbol, Else
+        Whitespace, Digit, OperatorPart, Parenthesis, ReferenceSymbol, Quote, Escape, Else
     }
 
     public static boolean isTrue(Object obj) {
@@ -194,6 +207,6 @@ public class ExprUtils {
         else if (obj instanceof Collection)
             return !((Collection<?>) obj).isEmpty();
         else
-            return Objects.equals(obj, 1);
+            return !Objects.equals(obj, 0);
     }
 }

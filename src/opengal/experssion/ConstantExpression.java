@@ -27,7 +27,10 @@ public final class ConstantExpression<T> implements Expression<T> {
 
     @Override
     public @NotNull String toString() {
-        return value.toString();
+        if (value instanceof String)
+            return "\"" + value + "\"";
+        else
+            return value.toString();
     }
 
     @Override

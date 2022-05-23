@@ -3,6 +3,7 @@ package opengal.test;
 import net.liplum.test.extension.Memory;
 import net.liplum.test.extension.Timing;
 import opengal.core.IExpressionReceiver;
+import opengal.experssion.ExprUtils;
 import opengal.experssion.Expression;
 import opengal.experssion.ExpressionParser;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @ExtendWith({Timing.class, Memory.class})
@@ -25,9 +27,14 @@ public class ExprTest {
         ExpressionParser parser = new ExpressionParser(Arrays.asList("true", "&&", "!", "(", "\"1\"", "!=", "\"abc\"", ")"));
         Expression<?> exp = parser.parse();
         System.out.println(exp);
+        Collection<String> tokens = ExprUtils.splitTokens("@SSS != \"ebw\" bad guy\" + 10");
+        System.out.println(tokens);
+        ExpressionParser p1 = new ExpressionParser(tokens);
+        System.out.println(p1.parse());
     }
 
     static class FakeMemory implements IExpressionReceiver {
+
 
         @Override
         public void set(@NotNull String name, @NotNull Object value) {
