@@ -15,17 +15,19 @@ import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith({Timing.class, Memory.class})
-public class ExprTest{
+public class ExprTest {
     Expression<?> expr;
     //@au = (@c * ($u + 43 )) * 30 + 6 >= 74
     List<String> tokens = Arrays.asList(
             "@au", "=", "(", "@c", "*", "(", "$ u", "+", "43", ")", ")", "*", "30", "+", "6", ">=", "74"
     );
-  public static void main(String[] args){
-    ExpressionParser parser = new ExpressionParser(List.of("true", "&&", "!", "(", "\"1\"", "!=", "\"abc\"", ")"));
-    Expression<?> exp = parser.parse();
-    System.out.println(exp);
-  }
+
+    public static void main(String[] args) {
+        ExpressionParser parser = new ExpressionParser(Arrays.asList("true", "&&", "!", "(", "\"1\"", "!=", "\"abc\"", ")"));
+        Expression<?> exp = parser.parse();
+        System.out.println(exp);
+    }
+
     static class FakeMemory implements IExpressionReceiver {
 
         @Override
