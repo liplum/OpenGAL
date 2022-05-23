@@ -194,6 +194,6 @@ public class ExprUtils {
         else if (obj instanceof Collection)
             return !((Collection<?>) obj).isEmpty();
         else
-            return Objects.equals(obj, 0);
+            return Objects.equals(obj, 1);
     }
 }

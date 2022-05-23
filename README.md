@@ -20,7 +20,7 @@ ___
 Add the dependency:
 ```groovy
 dependencies {
-    implementation 'com.github.liplum:OpenGAL:v0.4.1'
+    implementation 'com.github.liplum:OpenGAL:v0.4.2'
 }
 ```
 
